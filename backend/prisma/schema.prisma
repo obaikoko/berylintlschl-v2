@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URI")
+}
+
+model User {
+  id                   String         @id @default(auto()) @map("_id") @db.ObjectId
+  email                String         @unique
+  firstName            String
+  lastName             String
+  role                 String         @default("teacher")
+  status               String         @default("active")
+  level                String?
+  subLevel             String?
+  password             String
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  isAdmin              Boolean        @default(false)
+  userType             String?        @default("user")
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  student              Student[]
+  result               Result[]
+  schemeOfWork         SchemeOfWork[]
+}
+
+model Student {
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName            String
+  lastName             String
+  otherName            String?
+  dateOfBirth          DateTime
+  level                String
+  subLevel             String
+  gender               String
+  yearAdmitted         DateTime?
+  studentId            String?
+  stateOfOrigin        String
+  localGvt             String
+  homeTown             String?
+  sponsorName          String?
+  sponsorRelationship  String?
+  sponsorPhoneNumber   String?
+  sponsorEmail         String?
+  imageUrl             String?
+  imagePublicId        String?
+  password             String
+  isStudent            Boolean   @default(true)
+  isPaid               Boolean   @default(false)
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+
+  userId String? @db.ObjectId
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  results   Result[]
+}
+
+model StudentIdTracker {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  year       Int
+  level      String
+  lastNumber Int
+  updatedAt  DateTime @updatedAt
+
+  @@unique([year, level])
+}
+
+model NextTerm {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  reOpeningDate DateTime
+  level         String
+  term          String
+  session       String
+  busFee        Float?
+  nextTermFee   Float
+  otherCharges  Float?
+}
+
+model Staff {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName     String
+  lastName      String
+  otherName     String?
+  dateOfBirth   DateTime
+  qualification String?
+  category      String?
+  role          String?
+  gender        String
+  maritalStatus String?
+  yearAdmitted  DateTime?
+  stateOfOrigin String?
+  localGvt      String?
+  homeTown      String?
+  residence     String?
+  phone         String
+  email         String    @unique
+  imageUrl      String? // URL from Cloudinary
+  imagePublicId String? // Public ID from Cloudinary
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Admission {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  childName   String
+  dateOfBirth DateTime
+  gender      String
+  level       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Result {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @db.ObjectId
+  studentId       String   @db.ObjectId
+  firstName       String
+  lastName        String
+  otherName       String?
+  image           String?
+  level           String
+  subLevel        String
+  term            String
+  session         String
+  position        String?
+  totalScore      Float?
+  averageScore    Float?
+  numberInClass   Int?
+  teacherRemark   String?
+  principalRemark String?
+  isPaid          Boolean  @default(true)
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+
+  // Embedded Types (JSON fields for arrays of subdocuments)
+  subjectResults      subjectResult[]
+  affectiveAssessment affectiveAssessment[]
+  psychomotor         psychomotor[]
+}
+
+type subjectResult {
+  subject    String
+  testScore  Float  @default(0)
+  examScore  Float  @default(0)
+  totalScore Float  @default(0)
+  grade      String @default("-")
+}
+
+type affectiveAssessment {
+  aCategory String
+  grade     String @default("-")
+}
+
+type psychomotor {
+  pCategory String
+  grade     String @default("-")
+}
+
+model Event {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  date          DateTime
+  imageUrl      String?
+  imagePublicId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Announcement {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  message   String
+  createdBy String
+  target    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SchemeOfWork {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  subject    String
+  level      String
+  term       String
+  topics     Topic[]
+  uploadedBy User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     String   @db.ObjectId
+}
+
+type Topic {
+  week  Int
+  topic String[]
+}
+
+model TimeTable {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  level     String
+  subLevel  String
+  day       String
+  periods   Period[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+type Period {
+  subject   String
+  startTime String
+  endTime   String
+}
