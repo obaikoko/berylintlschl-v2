@@ -21,7 +21,8 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 const corsOptions = {
-  origin: process.env.PUBLIC_DOMAIN,
+  origin: ['https://www.berylintlschl.com', 'https://berylintlschl.com'],
+  // origin: 'http://localhost:3000',
   credentials: true,
 };
 
