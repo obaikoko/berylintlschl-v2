@@ -15,13 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateStudentPdf = void 0;
 const puppeteer_1 = __importDefault(require("puppeteer"));
 const generateStudentPdf = (html) => __awaiter(void 0, void 0, void 0, function* () {
-    const browser = yield puppeteer_1.default.launch();
+    const browser = yield puppeteer_1.default.launch({
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = yield browser.newPage();
-    yield page.setContent(html, { waitUntil: 'networkidle0' });
+    yield page.setContent(html, { waitUntil: "networkidle0" });
     const pdfBuffer = yield page.pdf({
-        format: 'A4',
+        format: "A4",
         printBackground: true,
-        margin: { top: '0.75cm', bottom: '0.75cm', left: '1cm', right: '1cm' },
+        margin: { top: "0.75cm", bottom: "0.75cm", left: "1cm", right: "1cm" },
         scale: 0.7,
     });
     yield browser.close();
