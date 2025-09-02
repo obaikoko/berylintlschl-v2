@@ -278,8 +278,13 @@ const getUsers = asyncHandler(
           role: true,
           status: true,
           createdAt: true,
+        
         },
+        orderBy: {
+          isAdmin: 'desc'
+        }
       });
+      
       res.json(users);
     } catch (error) {
       throw error;

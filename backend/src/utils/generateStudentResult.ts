@@ -22,6 +22,11 @@ function formatDate(value?: Date | null): string {
 }
 
 export const generateStudentResultHTML = async (result: StudentResult) => {
+
+  const mathScore = result.subjectResults.filter((x) => x.subject === 'Mathematics')
+  const engScore = result.subjectResults.filter((x) => x.subject === 'English')
+  const mathTotalScore = mathScore[0]?.totalScore;
+  const engTotalScore = engScore[0]?.totalScore;
   const nextTermInfo = await prisma.nextTerm.findFirst({
     where: {
       session: result.session,
@@ -163,7 +168,10 @@ ${generateLetterHeadHTML(result)}
   </tr>
   <tr class="footer">
     <td colspan="8">
-      Pass/Fail: ____________ &nbsp;&nbsp;&nbsp;&nbsp; 
+      Pass/Fail:    ${(mathTotalScore <= 40 && engTotalScore <= 40) ||
+                result.averageScore && result.averageScore < 40
+                  ? 'FAILED'
+                  : 'PASS'} &nbsp;&nbsp;&nbsp;&nbsp; 
       Conduct: ____________ &nbsp;&nbsp;&nbsp;&nbsp; 
       Signature: ____________
     </td>
@@ -173,21 +181,21 @@ ${generateLetterHeadHTML(result)}
       Re-Opening Date: ${formatDate(
         nextTermInfo.reOpeningDate ?? '-'
       )} &nbsp;&nbsp;&nbsp;&nbsp;
-      Next Term Fee: ₦${formatCurrency(
+      Next Term Fee: ${formatCurrency(
         nextTermInfo.nextTermFee ?? '-'
       )} &nbsp;&nbsp;&nbsp;&nbsp;
-      Bus Fare: ₦${formatCurrency(
+      Bus Fare: ${formatCurrency(
         nextTermInfo.busFee ?? '-'
       )} &nbsp;&nbsp;&nbsp;&nbsp;
-      Other Charges: ₦${formatCurrency(nextTermInfo.otherCharges && '-')} 
+      Other Charges: ${formatCurrency(nextTermInfo.otherCharges && '-')} 
     </td>
   
   </tr>
   <tr class="footer">
      <td colspan="8">
-      Account Name: Beryl International Schools &nbsp;&nbsp;&nbsp;&nbsp;
-      Account Number: 1234567890 &nbsp;&nbsp;&nbsp;&nbsp;
-      Bank Name: First Bank of Nigeria &nbsp;&nbsp;&nbsp;&nbsp;
+      ACCOUNT NAME: BERYL INTERNATIONAL SCHOOLS &nbsp;&nbsp;&nbsp;&nbsp;
+      ACCOUNT NUMBER: 2035177616 &nbsp;&nbsp;&nbsp;&nbsp;
+      BANK NAME: FIRST BANK OF NIGERIA &nbsp;&nbsp;&nbsp;&nbsp;
     </td>
   
   </tr>

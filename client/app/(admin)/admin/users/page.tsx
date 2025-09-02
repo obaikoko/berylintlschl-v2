@@ -238,7 +238,7 @@ const UsersPage = () => {
                             'Not Assigned'
                           )}
                         </TableCell>
-                        <TableCell>{user.role}</TableCell>
+                        <TableCell>{user.isAdmin ? 'admin' : user.role }</TableCell>
                         <TableCell
                           className={
                             user.status === 'suspended'

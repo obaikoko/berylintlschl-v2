@@ -8,7 +8,8 @@ const sendSingleMail = async ({
 }: SendSingleMailProps): Promise<boolean> => {
   try {
     const transporter = nodemailer.createTransport({
-      host: 'smtp.zoho.com',
+      service: 'Gmail',
+      host: 'smtp.gmail.com',
       port: 587,
       auth: {
         user: process.env.APP_EMAIL,
@@ -22,7 +23,7 @@ const sendSingleMail = async ({
     const mailOptions = {
       from: {
         name: 'BERYL INTERNATIONAL SCHOOLS',
-        address: 'administrator@berylintlschl.com',
+        address: 'berylintlschl@gmail.com',
       },
       to: email,
       subject,
@@ -45,7 +46,7 @@ const sendSingleMail = async ({
 
   <div style="text-align: center; font-size: 13px; color: #999;">
     <p>If you have any questions, contact us at 
-      <a href="mailto:administrator@berylintlschl.com" style="color: #004b87; text-decoration: none;">administrator@berylintlschl.com</a>.
+      <a href="mailto:berylintlschl@gmail.com" style="color: #004b87; text-decoration: none;">berylintlschl@gmail.com</a>.
     </p>
     <p style="margin-top: 4px;">&copy; 2025 Beryl International Schools. All rights reserved.</p>
   </div>

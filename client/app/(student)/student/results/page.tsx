@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -20,7 +21,7 @@ const StudentResultPage = () => {
     return (
       <div className='p-6'>
         <Card>
-          <CardContent>Loading Student data...</CardContent>
+          <CardContent>Loading  Results...</CardContent>
         </Card>
       </div>
     );
@@ -30,7 +31,7 @@ const StudentResultPage = () => {
     return (
       <div className='p-6'>
         <Card>
-          <CardContent>Failed to load Student data.</CardContent>
+          <CardContent>Failed to load results.</CardContent>
         </Card>
       </div>
     );
@@ -38,43 +39,16 @@ const StudentResultPage = () => {
   return (
     <div className='p-6 space-y-6'>
       <h1 className='text-2xl font-bold'>
-        Welcome Back, {result.firstName}
+        Welcome Back, {result.firstName} {' '}
         {result.lastName}
       </h1>
 
-      <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4'>
-        <Card>
-          <CardHeader>
-            <CardTitle>Enrolled Courses</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className='text-3xl font-semibold'>{data.totalSubjects}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Average</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className='text-3xl font-semibold'>{data.average.toFixed(2)}%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Results</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className='text-3xl font-semibold'>{data.totalResults}</p>
-          </CardContent>
-        </Card>
-      </div>
+    
 
       <div className='mt-8'>
         <Card>
           <CardHeader>
-            <CardTitle>My Courses</CardTitle>
+            <CardTitle>Uploaded Results</CardTitle>
           </CardHeader>
           <CardContent className='space-y-2'>
             <div className='overflow-x-auto max-h-[300px] overflow-y-auto border rounded-md'>
@@ -85,7 +59,7 @@ const StudentResultPage = () => {
                     <TableHead>Class</TableHead>
                     <TableHead>Term</TableHead>
                     <TableHead>Session</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -108,14 +82,14 @@ const StudentResultPage = () => {
                       <TableCell>{r.session}</TableCell>
 
                       <TableCell
-                        className={`${
-                          r.averageScore >= 50
-                            ? 'text-green-600 '
-                            : 'text-red-600 '
-                        }font-medium`}
+                  
                       >
-                        {r.averageScore >= 50 ? 'Passed' : 'Failed'}
-                      </TableCell>
+   
+                          <Button asChild><Link
+                          
+                          href={`/student/results/${r.id}`}
+                        > View</Link></Button>
+                                             </TableCell>
                     </TableRow>
                   ))}
                   {results.length === 0 && (

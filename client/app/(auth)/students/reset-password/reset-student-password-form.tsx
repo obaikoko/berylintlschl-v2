@@ -43,7 +43,7 @@ const ResetStudentPassword = ({ token }: { token: string }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-gray-500">
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="password" className="text-sm font-medium text-gray-700">

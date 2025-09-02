@@ -6,7 +6,6 @@ import {
   User,
   GraduationCap,
   CalendarDays,
-  Star,
   Users,
   LineChart,
 } from 'lucide-react';
@@ -42,12 +41,7 @@ const ResultHeader = ({ result }: { result: StudentResult }) => {
           </span>
         </div>
       
-        <div className='flex items-center gap-2'>
-          <Star className='w-4 h-4 text-yellow-500' />
-          <span>
-            <strong>Position:</strong> {result.position}
-          </span>
-        </div>
+        
         <div className='flex items-center gap-2'>
           <LineChart className='w-4 h-4 text-blue-600' />
           <span>

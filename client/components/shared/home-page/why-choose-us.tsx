@@ -59,15 +59,7 @@ const WhyChooseUs = () => {
           ))}
         </div>
 
-        {/* Why Choose Us Header */}
-        <div className="text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
-            Why Choose Us
-          </h2>
-          <p className="text-xl text-blue-600 dark:text-blue-400 italic max-w-3xl mx-auto">
-            Why Beryl International School Calabar is the Best Choice for Your Child
-          </p>
-        </div>
+       
       </div>
     </div>
   );

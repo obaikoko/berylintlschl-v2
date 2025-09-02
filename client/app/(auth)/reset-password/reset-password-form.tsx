@@ -43,7 +43,7 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-gray-500">
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="password" className="text-sm font-medium text-gray-700">
@@ -84,7 +84,7 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
               id="confirmPassword"
               type={showConfirm ? 'text' : 'password'}
               placeholder="Confirm your new password"
-              className="pl-10 pr-10 h-11 border-gray-200 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+              className="pl-10 pr-10 h-11 border-gray-200  focus:border-blue-500 focus:ring-blue-500"
               {...register('confirmPassword')}
             />
             <button

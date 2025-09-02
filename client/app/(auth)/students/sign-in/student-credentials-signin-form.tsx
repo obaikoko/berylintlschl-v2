@@ -8,12 +8,10 @@ import { useDispatch } from 'react-redux';
 import { useStudentLoginMutation } from '@/src/features/auth/studentsApiSlice';
 import { setCredentials } from '@/src/features/auth/authSlice';
 import { useRouter } from 'next/navigation';
-import {
-  authResponseSchema,
-  authUserSchema,
-} from '@/validators/userValidators';
+
+import { authStudentSchema, studentSchema, } from '@/validators/studentValidation';
 import { showZodErrors } from '@/lib/utils';
-import { AuthUserForm } from '@/schemas/userSchema';
+import { AuthStudentForm } from '@/schemas/studentSchema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
@@ -28,13 +26,13 @@ const StudentCredentialsSignInForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AuthUserForm>({
-    resolver: zodResolver(authUserSchema),
+  } = useForm<AuthStudentForm>({
+    resolver: zodResolver(authStudentSchema),
   });
 
-  const onSubmit = async (data: AuthUserForm) => {
+  const onSubmit = async (data: AuthStudentForm) => {
     try {
-      const result = authResponseSchema.safeParse(await login(data).unwrap());
+      const result = studentSchema.safeParse(await login(data).unwrap());
 
       if (!result.success) {
         toast.error('Invalid response from server');
@@ -53,27 +51,27 @@ const StudentCredentialsSignInForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-gray-500">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+          <Label htmlFor="studentId" className="text-sm font-medium text-gray-700">
             Student Email
           </Label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              placeholder="Enter your student email"
+              id="studentId"
+              type="text"
+              autoComplete="studentId"
+              placeholder="Enter your student ID"
               className="pl-10 h-11 border-gray-200 focus:border-green-500 focus:ring-green-500"
-              {...register('email')}
+              {...register('studentId')}
             />
           </div>
-          {errors.email && (
+          {errors.studentId && (
             <p className="text-red-500 text-sm mt-1 flex items-center">
               <span className="w-1 h-1 bg-red-500 rounded-full mr-2" />
-              {errors.email.message}
+              {errors.studentId.message}
             </p>
           )}
         </div>

@@ -39,14 +39,14 @@ export const generateLetterHeadHTML = (result: StudentResult) => {
           <td><strong>CLASS:</strong> ${result.level}${result.subLevel}</td>
         </tr>
         <tr>
-          <td><strong>SESSION:</strong> ${result.session} ${result.term}</td>
-          <td><strong>POSITION IN CLASS:</strong> ${result.position}</td>
+          <td><strong>SESSION:</strong> ${result.session} </td>
+          <td><strong>TERM:</strong> ${result.term}</td>
         </tr>
         <tr>
           <td><strong>STUDENT'S TOTAL SCORE:</strong> ${result.totalScore}</td>
           <td><strong>STUDENT AVERAGE:</strong> ${result.averageScore?.toFixed(
             2
-          )}</td>
+          )}%</td>
         </tr>
       </table>
     </div>
