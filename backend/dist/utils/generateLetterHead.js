@@ -38,12 +38,12 @@ const generateLetterHeadHTML = (result) => {
           <td><strong>CLASS:</strong> ${result.level}${result.subLevel}</td>
         </tr>
         <tr>
-          <td><strong>SESSION:</strong> ${result.session} ${result.term}</td>
-          <td><strong>POSITION IN CLASS:</strong> ${result.position}</td>
+          <td><strong>SESSION:</strong> ${result.session} </td>
+          <td><strong>TERM:</strong> ${result.term}</td>
         </tr>
         <tr>
           <td><strong>STUDENT'S TOTAL SCORE:</strong> ${result.totalScore}</td>
-          <td><strong>STUDENT AVERAGE:</strong> ${(_a = result.averageScore) === null || _a === void 0 ? void 0 : _a.toFixed(2)}</td>
+          <td><strong>STUDENT AVERAGE:</strong> ${(_a = result.averageScore) === null || _a === void 0 ? void 0 : _a.toFixed(2)}%</td>
         </tr>
       </table>
     </div>

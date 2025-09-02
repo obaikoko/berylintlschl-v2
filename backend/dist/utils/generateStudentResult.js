@@ -32,7 +32,11 @@ function formatDate(value) {
     });
 }
 const generateStudentResultHTML = (result) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
+    const mathScore = result.subjectResults.filter((x) => x.subject === 'Mathematics');
+    const engScore = result.subjectResults.filter((x) => x.subject === 'English');
+    const mathTotalScore = (_a = mathScore[0]) === null || _a === void 0 ? void 0 : _a.totalScore;
+    const engTotalScore = (_b = engScore[0]) === null || _b === void 0 ? void 0 : _b.totalScore;
     const nextTermInfo = yield prisma_1.prisma.nextTerm.findFirst({
         where: {
             session: result.session,
@@ -154,7 +158,7 @@ ${(0, generateLetterHead_1.generateLetterHeadHTML)(result)}
   ${subjectRows}
 
   <tr class="footer">
-    <td colspan="8">NUMBER OF PEOPLE IN CLASS: ${(_a = result.numberInClass) !== null && _a !== void 0 ? _a : '-'}</td>
+    <td colspan="8">NUMBER OF PEOPLE IN CLASS: ${(_c = result.numberInClass) !== null && _c !== void 0 ? _c : '-'}</td>
   </tr>
   <tr class="footer">
     <td colspan="8">
@@ -168,25 +172,28 @@ ${(0, generateLetterHead_1.generateLetterHeadHTML)(result)}
   </tr>
   <tr class="footer">
     <td colspan="8">
-      Pass/Fail: ____________ &nbsp;&nbsp;&nbsp;&nbsp; 
+      Pass/Fail:    ${(mathTotalScore <= 40 && engTotalScore <= 40) ||
+        result.averageScore && result.averageScore < 40
+        ? 'FAILED'
+        : 'PASS'} &nbsp;&nbsp;&nbsp;&nbsp; 
       Conduct: ____________ &nbsp;&nbsp;&nbsp;&nbsp; 
       Signature: ____________
     </td>
   </tr>
   <tr class="footer">
     <td colspan="8">
-      Re-Opening Date: ${formatDate((_b = nextTermInfo.reOpeningDate) !== null && _b !== void 0 ? _b : '-')} &nbsp;&nbsp;&nbsp;&nbsp;
-      Next Term Fee: ₦${formatCurrency((_c = nextTermInfo.nextTermFee) !== null && _c !== void 0 ? _c : '-')} &nbsp;&nbsp;&nbsp;&nbsp;
-      Bus Fare: ₦${formatCurrency((_d = nextTermInfo.busFee) !== null && _d !== void 0 ? _d : '-')} &nbsp;&nbsp;&nbsp;&nbsp;
-      Other Charges: ₦${formatCurrency(nextTermInfo.otherCharges && '-')} 
+      Re-Opening Date: ${formatDate((_d = nextTermInfo.reOpeningDate) !== null && _d !== void 0 ? _d : '-')} &nbsp;&nbsp;&nbsp;&nbsp;
+      Next Term Fee: ${formatCurrency((_e = nextTermInfo.nextTermFee) !== null && _e !== void 0 ? _e : '-')} &nbsp;&nbsp;&nbsp;&nbsp;
+      Bus Fare: ${formatCurrency((_f = nextTermInfo.busFee) !== null && _f !== void 0 ? _f : '-')} &nbsp;&nbsp;&nbsp;&nbsp;
+      Other Charges: ${formatCurrency(nextTermInfo.otherCharges && '-')} 
     </td>
   
   </tr>
   <tr class="footer">
      <td colspan="8">
-      Account Name: Beryl International Schools &nbsp;&nbsp;&nbsp;&nbsp;
-      Account Number: 1234567890 &nbsp;&nbsp;&nbsp;&nbsp;
-      Bank Name: First Bank of Nigeria &nbsp;&nbsp;&nbsp;&nbsp;
+      ACCOUNT NAME: BERYL INTERNATIONAL SCHOOLS &nbsp;&nbsp;&nbsp;&nbsp;
+      ACCOUNT NUMBER: 2035177616 &nbsp;&nbsp;&nbsp;&nbsp;
+      BANK NAME: FIRST BANK OF NIGERIA &nbsp;&nbsp;&nbsp;&nbsp;
     </td>
   
   </tr>

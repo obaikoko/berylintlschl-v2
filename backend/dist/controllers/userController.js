@@ -250,6 +250,9 @@ const getUsers = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
                 status: true,
                 createdAt: true,
             },
+            orderBy: {
+                isAdmin: 'desc'
+            }
         });
         res.json(users);
     }

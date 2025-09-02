@@ -23,8 +23,8 @@ dotenv_1.default.config();
 const port = process.env.PORT || 5000;
 const app = (0, express_1.default)();
 const corsOptions = {
-    origin: ['https://www.berylintlschl.com', 'https://berylintlschl.com'],
-    // origin: 'http://localhost:3000',
+    // origin: ['https://www.berylintlschl.com', 'https://berylintlschl.com'],
+    origin: 'http://localhost:3000',
     credentials: true,
 };
 app.use((0, cors_1.default)(corsOptions));

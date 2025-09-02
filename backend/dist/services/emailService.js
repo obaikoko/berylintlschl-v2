@@ -17,7 +17,9 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const sendSingleMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, subject, text, }) {
     try {
         const transporter = nodemailer_1.default.createTransport({
-            host: 'smtp.zoho.com',
+            service: 'Gmail',
+            host: 'smtp.gmail.com',
+            secure: true,
             port: 587,
             auth: {
                 user: process.env.APP_EMAIL,
@@ -30,7 +32,7 @@ const sendSingleMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ emai
         const mailOptions = {
             from: {
                 name: 'BERYL INTERNATIONAL SCHOOLS',
-                address: 'administrator@berylintlschl.com',
+                address: 'berylintlschl@gmail.com',
             },
             to: email,
             subject,
@@ -53,7 +55,7 @@ const sendSingleMail = (_a) => __awaiter(void 0, [_a], void 0, function* ({ emai
 
   <div style="text-align: center; font-size: 13px; color: #999;">
     <p>If you have any questions, contact us at 
-      <a href="mailto:administrator@berylintlschl.com" style="color: #004b87; text-decoration: none;">administrator@berylintlschl.com</a>.
+      <a href="mailto:berylintlschl@gmail.com" style="color: #004b87; text-decoration: none;">berylintlschl@gmail.com</a>.
     </p>
     <p style="margin-top: 4px;">&copy; 2025 Beryl International Schools. All rights reserved.</p>
   </div>
