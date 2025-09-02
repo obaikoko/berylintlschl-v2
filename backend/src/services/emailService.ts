@@ -10,6 +10,7 @@ const sendSingleMail = async ({
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       host: 'smtp.gmail.com',
+      secure: true,
       port: 587,
       auth: {
         user: process.env.APP_EMAIL,
