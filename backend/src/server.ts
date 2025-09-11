@@ -22,8 +22,8 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 const corsOptions = {
-  // origin: ['https://www.berylintlschl.com', 'https://berylintlschl.com'],
-  origin: 'http://localhost:3000',
+  origin: ['https://www.berylintlschl.com', 'https://berylintlschl.com'],
+  // origin: 'http://localhost:3000',
   credentials: true,
 };
 
