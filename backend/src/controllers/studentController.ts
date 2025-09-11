@@ -734,6 +734,11 @@ const resetPassword = asyncHandler(
 const graduateStudent = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     // Step 1: Fetch all students
+
+    if (!req.user.superAdmin ) {
+      res.status(401)
+      throw new Error('Not Authorized')
+    }
     const students = await prisma.student.findMany();
 
     const unmappedLevels: string[] = [];

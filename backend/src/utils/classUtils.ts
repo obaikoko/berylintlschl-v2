@@ -1,4 +1,10 @@
+const currentYear = new Date().getFullYear()
 export const classProgression: Record<string, string> = {
+  'Creche': 'Reception',
+  'Reception': 'Pre School',
+  'Pre School': 'Pre KG',
+  'Pre KG': 'KG',
+  'KG': 'Grade 1',
   'Grade 1': 'Grade 2',
   'Grade 2': 'Grade 3',
   'Grade 3': 'Grade 4',
@@ -9,14 +15,15 @@ export const classProgression: Record<string, string> = {
   'JSS 3': 'SSS 1',
   'SSS 1': 'SSS 2',
   'SSS 2': 'SSS 3',
-  'SSS 3': 'Graduated',
+  'SSS 3': `${currentYear} Graduate`,
 };
 
 export const classCodeMapping: Record<string, string> = {
-  'Lower Reception': 'LR',
-  'Upper Reception': 'UR',
-  'Nursery 1': 'N1',
-  'Nursery 2': 'N2',
+  'Creche': 'CR',
+  'Reception': 'RP',
+  'Pre School': 'PS',
+  'Pre KG': 'PKG',
+  'KG': 'KG',
   'Grade 1': 'G1',
   'Grade 2': 'G2',
   'Grade 3': 'G3',
@@ -33,10 +40,10 @@ export const classCodeMapping: Record<string, string> = {
 
 export const levels: string[] = [
   'Creche',
-  'Lower Reception',
-  'Upper Reception',
-  'Nursery 1',
-  'Nursery 2',
+  'Reception',
+  'Pre School',
+  'Pre KG',
+  'KG',
   'Grade 1',
   'Grade 2',
   'Grade 3',
