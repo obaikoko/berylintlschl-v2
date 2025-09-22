@@ -60,16 +60,16 @@ export const studentSchema = z.object({
   isStudent: z.boolean(),
   isPaid: z.boolean(),
   gender: z.string(),
-  yearAdmitted: z.string().datetime().optional(),
-  stateOfOrigin: z.string().optional(),
-  localGvt: z.string().optional(),
-  homeTown: z.string().optional(),
-  sponsorEmail: z.string().email().nullable().optional(),
+  yearAdmitted: z.string().datetime(), // Also an ISO date string
+  stateOfOrigin: z.string(),
+  localGvt: z.string(),
+  homeTown: z.string(),
+  sponsorEmail: z.string().email(),
   sponsorName: z.string().nullable(),
   sponsorPhoneNumber: z.string().nullable(),
   sponsorRelationship: z.string().nullable(),
   imageUrl: z.string().nullable(),
-  createdAt: z.coerce.string().optional()
+  createdAt: z.coerce.date()
 });
 
 export const searchSchema = z.object({

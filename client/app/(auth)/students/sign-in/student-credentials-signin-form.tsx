@@ -9,7 +9,7 @@ import { useStudentLoginMutation } from '@/src/features/auth/studentsApiSlice';
 import { setCredentials } from '@/src/features/auth/authSlice';
 import { useRouter } from 'next/navigation';
 
-import { authStudentSchema, studentSchema, } from '@/validators/studentValidation';
+import { authStudentSchema } from '@/validators/studentValidation';
 import { showZodErrors } from '@/lib/utils';
 import { AuthStudentForm } from '@/schemas/studentSchema';
 import { useForm } from 'react-hook-form';
@@ -32,15 +32,10 @@ const StudentCredentialsSignInForm = () => {
 
   const onSubmit = async (data: AuthStudentForm) => {
     try {
-      const result = studentSchema.safeParse(await login(data).unwrap());
+      const res = await login(data).unwrap();
 
-      if (!result.success) {
-        toast.error('Invalid response from server');
-        console.error(result.error);
-        return;
-      }
+      
 
-      const res = result.data;
       dispatch(setCredentials(res));
 
       toast.success(`Welcome back, ${res.firstName} ${res.lastName}!`);
