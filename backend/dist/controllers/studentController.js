@@ -24,6 +24,7 @@ const emailService_1 = require("../services/emailService");
 const crypto_1 = __importDefault(require("crypto"));
 const usersValidators_1 = require("../validators/usersValidators");
 const classUtils_1 = require("../utils/classUtils");
+const cloudinary_1 = __importDefault(require("../config/cloudinary"));
 // Authenticate Student
 // @route POST api/student/auth
 // privacy Public
@@ -46,11 +47,11 @@ const authStudent = (0, express_async_handler_1.default)((req, res) => __awaiter
         });
         if (!student) {
             res.status(400);
-            throw new Error('Student does not exist');
+            throw new Error("Student does not exist");
         }
         if (!student || !(yield bcrypt_1.default.compare(password, student.password))) {
             res.status(401);
-            throw new Error('Invalid Email or Password');
+            throw new Error("Invalid Email or Password");
         }
         const authenticatedStudent = yield prisma_1.prisma.student.findFirst({
             where: {
@@ -98,14 +99,14 @@ const registerStudent = (0, express_async_handler_1.default)((req, res) => __awa
         // Check if student already exists
         const existingStudent = yield prisma_1.prisma.student.findFirst({
             where: {
-                firstName: { equals: firstName, mode: 'insensitive' },
-                lastName: { equals: lastName, mode: 'insensitive' },
+                firstName: { equals: firstName, mode: "insensitive" },
+                lastName: { equals: lastName, mode: "insensitive" },
                 dateOfBirth: { equals: dateOfBirth },
             },
         });
         if (existingStudent) {
             res.status(400);
-            throw new Error('Student already exists');
+            throw new Error("Student already exists");
         }
         // Class level to code mapping
         const currentYear = new Date().getFullYear();
@@ -139,7 +140,7 @@ const registerStudent = (0, express_async_handler_1.default)((req, res) => __awa
         }
         const studentId = `BIS/${currentYear}/${classCode}/${tracker.lastNumber
             .toString()
-            .padStart(3, '0')}`;
+            .padStart(3, "0")}`;
         const hashedPassword = yield bcrypt_1.default.hash(process.env.DEFAULTPASSWORD, 10);
         const student = yield prisma_1.prisma.student.create({
             data: {
@@ -199,7 +200,7 @@ const getAllStudents = (0, express_async_handler_1.default)((req, res) => __awai
     const user = req.user;
     if (!user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const level = req.query.level;
     const keyword = req.query.keyword;
@@ -208,13 +209,13 @@ const getAllStudents = (0, express_async_handler_1.default)((req, res) => __awai
     // Prisma filter
     const whereClause = Object.assign(Object.assign({}, (keyword && {
         OR: [
-            { firstName: { contains: keyword, mode: 'insensitive' } },
-            { lastName: { contains: keyword, mode: 'insensitive' } },
-            { otherName: { contains: keyword, mode: 'insensitive' } },
+            { firstName: { contains: keyword, mode: "insensitive" } },
+            { lastName: { contains: keyword, mode: "insensitive" } },
+            { otherName: { contains: keyword, mode: "insensitive" } },
         ],
     })), (level &&
-        level !== 'All' && {
-        level: { contains: level, mode: 'insensitive' },
+        level !== "All" && {
+        level: { contains: level, mode: "insensitive" },
     }));
     // If not admin, filter by their level/subLevel
     if (!user.isAdmin) {
@@ -248,7 +249,7 @@ const getAllStudents = (0, express_async_handler_1.default)((req, res) => __awai
                 updatedAt: true,
             },
             where: whereClause,
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
             skip: pageSize * (page - 1),
             take: pageSize,
         }),
@@ -265,7 +266,7 @@ exports.getAllStudents = getAllStudents;
 const getStudentsRegisteredByUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user) {
         res.status(401);
-        throw new Error('Unauthorized');
+        throw new Error("Unauthorized");
     }
     const userId = req.user.id;
     const page = parseInt(req.query.pageNumber) || 1;
@@ -302,7 +303,7 @@ const getStudentsRegisteredByUser = (0, express_async_handler_1.default)((req, r
         where: {
             userId: userId,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip: pageSize * (page - 1),
         take: pageSize,
     });
@@ -317,7 +318,7 @@ exports.getStudentsRegisteredByUser = getStudentsRegisteredByUser;
 const exportStudentsCSV = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user || !req.user.isAdmin) {
         res.status(401);
-        throw new Error('Unauthorized');
+        throw new Error("Unauthorized");
     }
     const students = yield prisma_1.prisma.student.findMany({
         select: {
@@ -335,18 +336,18 @@ const exportStudentsCSV = (0, express_async_handler_1.default)((req, res) => __a
     });
     if (!students.length) {
         res.status(404);
-        throw new Error('No student data to export');
+        throw new Error("No student data to export");
     }
     // Format current date
     const now = new Date();
-    const formattedDate = now.toISOString().split('T')[0]; // e.g., '2025-05-25'
+    const formattedDate = now.toISOString().split("T")[0]; // e.g., '2025-05-25'
     const filename = `students_${formattedDate}.csv`;
     // Convert to CSV
     const parser = new json2csv_1.Parser();
     const csv = parser.parse(students);
     // Set headers to trigger download
-    res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", `attachment; filename=${filename}`);
     res.status(200).send(csv);
 }));
 exports.exportStudentsCSV = exportStudentsCSV;
@@ -356,7 +357,7 @@ exports.exportStudentsCSV = exportStudentsCSV;
 const getStudent = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const student = yield prisma_1.prisma.student.findFirst({
         select: {
@@ -389,7 +390,7 @@ const getStudent = (0, express_async_handler_1.default)((req, res) => __awaiter(
     });
     if (!student) {
         res.status(400);
-        throw new Error('Student not found!');
+        throw new Error("Student not found!");
     }
     res.status(200);
     res.json(student);
@@ -430,7 +431,7 @@ const getStudentProfile = (0, express_async_handler_1.default)((req, res) => __a
     });
     if (!student) {
         res.status(400);
-        throw new Error('Student not found!');
+        throw new Error("Student not found!");
     }
     res.status(200);
     res.json(student);
@@ -441,10 +442,10 @@ exports.getStudentProfile = getStudentProfile;
 // @privacy Private ADMIN
 const updateStudent = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const validateData = studentValidators_1.updateStudentSchema.parse(req.body);
-    const { firstName, lastName, otherName, dateOfBirth, level, subLevel, gender, yearAdmitted, stateOfOrigin, localGvt, homeTown, sponsorName, sponsorRelationship, sponsorPhoneNumber, sponsorEmail, } = validateData;
+    const { firstName, lastName, otherName, dateOfBirth, level, subLevel, gender, yearAdmitted, stateOfOrigin, localGvt, homeTown, sponsorName, sponsorRelationship, sponsorPhoneNumber, sponsorEmail, image, } = validateData;
     if (!req.user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const student = yield prisma_1.prisma.student.findFirst({
         where: {
@@ -453,7 +454,27 @@ const updateStudent = (0, express_async_handler_1.default)((req, res) => __await
     });
     if (!student) {
         res.status(404);
-        throw new Error('No Student Found!');
+        throw new Error("No Student Found!");
+    }
+    // Check if Image is attached
+    if (image) {
+        const existingImageId = student.imagePublicId || "";
+        if (existingImageId) {
+            const newImageId = existingImageId.substring(existingImageId.indexOf("beryl") + "beryl/".length);
+            const uploadedResponse = yield cloudinary_1.default.uploader.upload(image, {
+                folder: "beryl",
+                public_id: newImageId,
+            });
+            student.imageUrl = uploadedResponse.url;
+            student.imagePublicId = uploadedResponse.public_id;
+        }
+        else {
+            const uploadedResponse = yield cloudinary_1.default.uploader.upload(image, {
+                folder: "beryl",
+            });
+            student.imageUrl = uploadedResponse.url;
+            student.imagePublicId = uploadedResponse.public_id;
+        }
     }
     const updateStudent = yield prisma_1.prisma.student.update({
         select: {
@@ -498,6 +519,8 @@ const updateStudent = (0, express_async_handler_1.default)((req, res) => __await
             sponsorRelationship: sponsorRelationship !== null && sponsorRelationship !== void 0 ? sponsorRelationship : student.sponsorRelationship,
             sponsorEmail: sponsorEmail !== null && sponsorEmail !== void 0 ? sponsorEmail : student.sponsorEmail,
             sponsorPhoneNumber: sponsorPhoneNumber !== null && sponsorPhoneNumber !== void 0 ? sponsorPhoneNumber : student.sponsorPhoneNumber,
+            imageUrl: student.imageUrl,
+            imagePublicId: student.imagePublicId
         },
     });
     // Return the updated student details
@@ -510,14 +533,14 @@ exports.updateStudent = updateStudent;
 const deleteStudent = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const student = yield prisma_1.prisma.student.findUnique({
         where: { id: req.params.id },
     });
     if (!student) {
         res.status(404);
-        throw new Error('Student Not Found!');
+        throw new Error("Student Not Found!");
     }
     // Delete child results first
     yield prisma_1.prisma.result.deleteMany({
@@ -527,7 +550,7 @@ const deleteStudent = (0, express_async_handler_1.default)((req, res) => __await
     yield prisma_1.prisma.student.delete({
         where: { id: student.id },
     });
-    res.status(200).json('Student data deleted');
+    res.status(200).json("Student data deleted");
 }));
 exports.deleteStudent = deleteStudent;
 // @desc Send reset password link student
@@ -545,15 +568,15 @@ const forgetPassword = (0, express_async_handler_1.default)((req, res) => __awai
         });
         if (!student) {
             res.status(404);
-            throw new Error('Student not found');
+            throw new Error("Student not found");
         }
         // Generate reset token
-        const resetToken = crypto_1.default.randomBytes(32).toString('hex');
+        const resetToken = crypto_1.default.randomBytes(32).toString("hex");
         // Hash the reset token before saving to the database
         const hashedToken = crypto_1.default
-            .createHash('sha256')
+            .createHash("sha256")
             .update(resetToken)
-            .digest('hex');
+            .digest("hex");
         const newDate = new Date(Date.now() + 60 * 60 * 1000);
         yield prisma_1.prisma.student.update({
             where: { id: student.id },
@@ -567,11 +590,11 @@ const forgetPassword = (0, express_async_handler_1.default)((req, res) => __awai
         // Send the email
         (0, emailService_1.sendSingleMail)({
             email: student.sponsorEmail,
-            subject: 'Password Reset',
+            subject: "Password Reset",
             text: `You requested a password reset. Please go to this link to reset your password: ${resetUrl}`,
         });
         res.status(200);
-        res.json('Password reset link has been sent to your email');
+        res.json("Password reset link has been sent to your email");
     }
     catch (error) {
         throw error;
@@ -584,15 +607,15 @@ exports.forgetPassword = forgetPassword;
 const resetPassword = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { token } = req.query;
-        if (!token || typeof token !== 'string') {
-            res.status(400).json({ message: 'No token provided' });
+        if (!token || typeof token !== "string") {
+            res.status(400).json({ message: "No token provided" });
             return;
         }
         const { password } = usersValidators_1.resetPasswordSchema.parse(req.body);
         const hashedToken = crypto_1.default
-            .createHash('sha256')
+            .createHash("sha256")
             .update(token)
-            .digest('hex');
+            .digest("hex");
         const student = yield prisma_1.prisma.student.findFirst({
             where: {
                 resetPasswordToken: hashedToken,
@@ -603,7 +626,7 @@ const resetPassword = (0, express_async_handler_1.default)((req, res) => __await
         });
         console.log({ student: student });
         if (!student) {
-            res.status(400).json({ message: 'Invalid or expired reset token' });
+            res.status(400).json({ message: "Invalid or expired reset token" });
             return;
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, 12);
@@ -620,7 +643,7 @@ const resetPassword = (0, express_async_handler_1.default)((req, res) => __await
             subject: `Password Reset Successful`,
             text: `You have successfully reset your password. </br> NOTE: If you did not initiate this process, please change your password or contact the admin immediately.`,
         });
-        res.status(200).json({ message: 'Password has been reset successfully' });
+        res.status(200).json({ message: "Password has been reset successfully" });
     }
     catch (error) {
         throw error;
@@ -629,6 +652,10 @@ const resetPassword = (0, express_async_handler_1.default)((req, res) => __await
 exports.resetPassword = resetPassword;
 const graduateStudent = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Step 1: Fetch all students
+    if (!req.user.superAdmin) {
+        res.status(401);
+        throw new Error("Not Authorized");
+    }
     const students = yield prisma_1.prisma.student.findMany();
     const unmappedLevels = [];
     let updatedCount = 0;
@@ -650,7 +677,7 @@ const graduateStudent = (0, express_async_handler_1.default)((req, res) => __awa
     res.status(200).json(Object.assign({ message: `Successfully promoted ${updatedCount} students.` }, (unmappedLevels.length > 0 && {
         warning: `Some levels did not match class progression: ${[
             ...new Set(unmappedLevels),
-        ].join(', ')}`,
+        ].join(", ")}`,
     })));
 }));
 exports.graduateStudent = graduateStudent;

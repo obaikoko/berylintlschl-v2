@@ -70,8 +70,8 @@ export const updateStudentSchema = z.object({
   sponsorRelationship: z.string().optional().nullable(),
   sponsorPhoneNumber: z.string().optional().nullable(),
   sponsorEmail: z.string().email('Invalid email address').optional().nullable(),
-  imageUrl: z.string().optional().nullable(),
-  imagePublicId: z.string().optional().nullable(),
+  image: z.string().optional().nullable(),
+  
 });
 
 export const authStudentSchema = z.object({

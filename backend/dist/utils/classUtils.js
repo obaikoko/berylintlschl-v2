@@ -1,7 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.levels = exports.classCodeMapping = exports.classProgression = void 0;
+const currentYear = new Date().getFullYear();
 exports.classProgression = {
+    'Creche': 'Reception',
+    'Reception': 'Pre School',
+    'Pre School': 'Pre KG',
+    'Pre KG': 'KG',
+    'KG': 'Grade 1',
     'Grade 1': 'Grade 2',
     'Grade 2': 'Grade 3',
     'Grade 3': 'Grade 4',
@@ -12,13 +18,14 @@ exports.classProgression = {
     'JSS 3': 'SSS 1',
     'SSS 1': 'SSS 2',
     'SSS 2': 'SSS 3',
-    'SSS 3': 'Graduated',
+    'SSS 3': `${currentYear} Graduate`,
 };
 exports.classCodeMapping = {
-    'Lower Reception': 'LR',
-    'Upper Reception': 'UR',
-    'Nursery 1': 'N1',
-    'Nursery 2': 'N2',
+    'Creche': 'CR',
+    'Reception': 'RP',
+    'Pre School': 'PS',
+    'Pre KG': 'PKG',
+    'KG': 'KG',
     'Grade 1': 'G1',
     'Grade 2': 'G2',
     'Grade 3': 'G3',
@@ -34,10 +41,10 @@ exports.classCodeMapping = {
 };
 exports.levels = [
     'Creche',
-    'Lower Reception',
-    'Upper Reception',
-    'Nursery 1',
-    'Nursery 2',
+    'Reception',
+    'Pre School',
+    'Pre KG',
+    'KG',
     'Grade 1',
     'Grade 2',
     'Grade 3',

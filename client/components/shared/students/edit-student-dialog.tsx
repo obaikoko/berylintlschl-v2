@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -6,22 +6,23 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectTrigger,
   SelectContent,
   SelectItem,
   SelectValue,
-} from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { levels, subLevels, relationships, genders } from '@/lib/utils';
-import { useEffect, useState } from 'react';
-import { nigeriaStatesAndLgas } from '@/lib/state-local-gvt';
-
+} from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { levels, subLevels, relationships, genders } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { nigeriaStatesAndLgas } from "@/lib/state-local-gvt";
+import { toast } from "sonner";
+import Resizer from "react-image-file-resizer";
 
 interface EditStudentFormData {
   studentId?: string;
@@ -42,6 +43,7 @@ interface EditStudentFormData {
   sponsorPhoneNumber: string;
   sponsorRelationship: string;
   yearAdmitted: string;
+  image?: string; // ✅ added image field
 }
 
 interface EditStudentDialogProps {
@@ -71,7 +73,53 @@ export default function EditStudentDialog({
       setLgas([]);
     }
   }, [formData.stateOfOrigin]);
-  
+
+  // ✅ Strict typing for Promise<string>
+  const resizeFile = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      try {
+        Resizer.imageFileResizer(
+          file,
+          640,
+          510,
+          "JPEG",
+          70,
+          0,
+          (uri) => {
+            if (typeof uri === "string") {
+              resolve(uri);
+            } else {
+              reject("Failed to resize image");
+            }
+          },
+          "base64"
+        );
+      } catch (err) {
+        reject(err);
+      }
+    });
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const resizedImage = await resizeFile(file);
+
+      // ✅ Attach image to formData
+      setFormData((prev) => ({
+        ...prev,
+        image: resizedImage,
+      }));
+
+
+
+      
+    } catch (error) {
+      toast.error("Error resizing image");
+      console.error("Error resizing image:", error);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -93,45 +141,45 @@ export default function EditStudentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='max-h-[90vh] overflow-y-auto'>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Student</DialogTitle>
           <DialogDescription>Update student details.</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={onSubmit} className='space-y-3'>
+        <form onSubmit={onSubmit} className="space-y-3">
           <Input
-            name='firstName'
+            name="firstName"
             value={formData.firstName}
             onChange={handleInputChange}
-            placeholder='First Name'
+            placeholder="First Name"
           />
           <Input
-            name='lastName'
+            name="lastName"
             value={formData.lastName}
             onChange={handleInputChange}
-            placeholder='Last Name'
+            placeholder="Last Name"
           />
           <Input
-            name='otherName'
+            name="otherName"
             value={formData.otherName}
             onChange={handleInputChange}
-            placeholder='Other Name'
+            placeholder="Other Name"
           />
           <Input
-            name='dateOfBirth'
+            name="dateOfBirth"
             value={formData.dateOfBirth}
             onChange={handleInputChange}
-            type='date'
+            type="date"
           />
 
           <Label>Gender</Label>
           <Select
             value={formData.gender}
-            onValueChange={(value) => handleSelectChange('gender', value)}
+            onValueChange={(value) => handleSelectChange("gender", value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder='Select Gender' />
+              <SelectValue placeholder="Select Gender" />
             </SelectTrigger>
             <SelectContent>
               {genders.map((g) => (
@@ -145,10 +193,10 @@ export default function EditStudentDialog({
           <Label>Class</Label>
           <Select
             value={formData.level}
-            onValueChange={(value) => handleSelectChange('level', value)}
+            onValueChange={(value) => handleSelectChange("level", value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder='Select Level' />
+              <SelectValue placeholder="Select Level" />
             </SelectTrigger>
             <SelectContent>
               {levels.map((l) => (
@@ -162,10 +210,10 @@ export default function EditStudentDialog({
           <Label>Sub Class</Label>
           <Select
             value={formData.subLevel}
-            onValueChange={(value) => handleSelectChange('subLevel', value)}
+            onValueChange={(value) => handleSelectChange("subLevel", value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder='Select Sub-Level' />
+              <SelectValue placeholder="Select Sub-Level" />
             </SelectTrigger>
             <SelectContent>
               {subLevels.map((s) => (
@@ -177,22 +225,22 @@ export default function EditStudentDialog({
           </Select>
 
           <Input
-            name='yearAdmitted'
+            name="yearAdmitted"
             value={formData.yearAdmitted}
             onChange={handleInputChange}
-            placeholder='Year Admitted'
-            type='number'
+            placeholder="Year Admitted"
+            type="number"
           />
 
           <Label>State of Origin</Label>
           <Select
             value={formData.stateOfOrigin}
             onValueChange={(value) =>
-              handleSelectChange('stateOfOrigin', value)
+              handleSelectChange("stateOfOrigin", value)
             }
           >
             <SelectTrigger>
-              <SelectValue placeholder='Select State' />
+              <SelectValue placeholder="Select State" />
             </SelectTrigger>
             <SelectContent>
               {Object.keys(nigeriaStatesAndLgas).map((state) => (
@@ -206,11 +254,11 @@ export default function EditStudentDialog({
           <Label>Local Government</Label>
           <Select
             value={formData.localGvt}
-            onValueChange={(value) => handleSelectChange('localGvt', value)}
+            onValueChange={(value) => handleSelectChange("localGvt", value)}
             disabled={!lgas.length}
           >
             <SelectTrigger>
-              <SelectValue placeholder='Select LGA' />
+              <SelectValue placeholder="Select LGA" />
             </SelectTrigger>
             <SelectContent>
               {lgas.map((lga, index) => (
@@ -225,28 +273,28 @@ export default function EditStudentDialog({
           </Select>
 
           <Input
-            name='homeTown'
+            name="homeTown"
             value={formData.homeTown}
             onChange={handleInputChange}
-            placeholder='Home Town'
+            placeholder="Home Town"
           />
 
           <Input
-            name='sponsorName'
+            name="sponsorName"
             value={formData.sponsorName}
             onChange={handleInputChange}
-            placeholder='Sponsor Name'
+            placeholder="Sponsor Name"
           />
 
           <Label>Sponsor Relationship</Label>
           <Select
             value={formData.sponsorRelationship}
             onValueChange={(value) =>
-              handleSelectChange('sponsorRelationship', value)
+              handleSelectChange("sponsorRelationship", value)
             }
           >
             <SelectTrigger>
-              <SelectValue placeholder='Sponsor Relationship' />
+              <SelectValue placeholder="Sponsor Relationship" />
             </SelectTrigger>
             <SelectContent>
               {relationships.map((r) => (
@@ -258,26 +306,28 @@ export default function EditStudentDialog({
           </Select>
 
           <Input
-            name='sponsorPhoneNumber'
+            name="sponsorPhoneNumber"
             value={formData.sponsorPhoneNumber}
             onChange={handleInputChange}
-            placeholder='Sponsor Phone'
+            placeholder="Sponsor Phone"
           />
           <Input
-            name='sponsorEmail'
+            name="sponsorEmail"
             value={formData.sponsorEmail}
             onChange={handleInputChange}
-            placeholder='Sponsor Email'
+            placeholder="Sponsor Email"
           />
 
-          <Button type='submit' disabled={isLoading} className='w-full'>
+          <Input type="file" accept="image/*" onChange={handleImageChange} />
+
+          <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? (
               <>
-                <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 Updating...
               </>
             ) : (
-              'Update Student'
+              "Update Student"
             )}
           </Button>
         </form>

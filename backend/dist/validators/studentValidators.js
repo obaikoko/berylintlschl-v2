@@ -70,8 +70,7 @@ exports.updateStudentSchema = zod_1.z.object({
     sponsorRelationship: zod_1.z.string().optional().nullable(),
     sponsorPhoneNumber: zod_1.z.string().optional().nullable(),
     sponsorEmail: zod_1.z.string().email('Invalid email address').optional().nullable(),
-    imageUrl: zod_1.z.string().optional().nullable(),
-    imagePublicId: zod_1.z.string().optional().nullable(),
+    image: zod_1.z.string().optional().nullable(),
 });
 exports.authStudentSchema = zod_1.z.object({
     studentId: zod_1.z.string().min(3, 'StudentId must be at least 3 characters'),
