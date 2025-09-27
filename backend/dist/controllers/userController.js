@@ -43,11 +43,11 @@ const authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
         });
         if (!user || !(yield bcrypt_1.default.compare(password, user.password))) {
             res.status(401);
-            throw new Error('Invalid Email or Password');
+            throw new Error("Invalid Email or Password");
         }
-        if (user.status === 'suspended') {
+        if (user.status === "suspended") {
             res.status(401);
-            throw new Error('Account deactivated');
+            throw new Error("Account deactivated");
         }
         const authenticatedUser = yield prisma_1.prisma.user.findUnique({
             where: { email },
@@ -64,6 +64,13 @@ const authUser = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
                 createdAt: true,
             },
         });
+        const currentUserIp = req.ip;
+        yield prisma_1.prisma.user.update({
+            where: { id: authenticatedUser === null || authenticatedUser === void 0 ? void 0 : authenticatedUser.id },
+            data: {
+                currentUserIp,
+            },
+        });
         (0, generateToken_1.default)(res, user.id);
         res.status(200).json(authenticatedUser);
     }
@@ -77,12 +84,12 @@ exports.authUser = authUser;
 // @privacy Public
 const logoutUser = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.cookie('jwt', '', {
+        res.cookie("jwt", "", {
             httpOnly: true,
             expires: new Date(0),
         });
         res.status(200);
-        res.json({ message: 'Logged out user' });
+        res.json({ message: "Logged out user" });
     }
     catch (error) {
         throw error;
@@ -104,7 +111,7 @@ const registerUser = (0, express_async_handler_1.default)((req, res) => __awaite
         });
         if (userExit) {
             res.status(400);
-            throw new Error('User already exist');
+            throw new Error("User already exist");
         }
         // hash password before saving
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
@@ -161,7 +168,7 @@ const getUserProfile = (0, express_async_handler_1.default)((req, res) => __awai
         });
         if (!user) {
             res.status(404);
-            throw new Error('User not found');
+            throw new Error("User not found");
         }
         res.status(200);
         res.json(user);
@@ -183,7 +190,7 @@ const updateUser = (0, express_async_handler_1.default)((req, res) => __awaiter(
         });
         if (!user) {
             res.status(404);
-            throw new Error('User not found');
+            throw new Error("User not found");
         }
         // Update fields conditionally
         if (password) {
@@ -251,8 +258,8 @@ const getUsers = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
                 createdAt: true,
             },
             orderBy: {
-                isAdmin: 'desc'
-            }
+                isAdmin: "desc",
+            },
         });
         res.json(users);
     }
@@ -285,7 +292,7 @@ const getUserById = (0, express_async_handler_1.default)((req, res) => __awaiter
         });
         if (!user) {
             res.status(404);
-            throw new Error('User not found!');
+            throw new Error("User not found!");
         }
         res.status(200).json(user);
     }
@@ -307,18 +314,18 @@ const deleteUser = (0, express_async_handler_1.default)((req, res) => __awaiter(
         if (user) {
             if (user.isAdmin) {
                 res.status(400);
-                throw new Error('Can not delete admin user');
+                throw new Error("Can not delete admin user");
             }
             yield prisma_1.prisma.user.delete({
                 where: {
                     id: user.id,
                 },
             });
-            res.json({ message: 'User removed' });
+            res.json({ message: "User removed" });
         }
         else {
             res.status(404);
-            throw new Error('User not found');
+            throw new Error("User not found");
         }
     }
     catch (error) {
@@ -336,15 +343,15 @@ const sendMail = (0, express_async_handler_1.default)((req, res) => __awaiter(vo
         const user = req.user;
         if (!user) {
             res.status(401);
-            throw new Error('Unauthorized!');
+            throw new Error("Unauthorized!");
         }
         if (!user.isAdmin) {
             res.status(401);
-            throw new Error('Unauthorized Contact the adminitration');
+            throw new Error("Unauthorized Contact the adminitration");
         }
         yield (0, emailService_1.sendSingleMail)({ email, subject, text });
         res.status(200);
-        res.json('Email sent successfully');
+        res.json("Email sent successfully");
     }
     catch (error) {
         throw error;
@@ -361,11 +368,11 @@ const sendMultipleMails = (0, express_async_handler_1.default)((req, res) => __a
         const user = req.user;
         if (!user) {
             res.status(401);
-            throw new Error('Unauthorized!');
+            throw new Error("Unauthorized!");
         }
         if (!user.isAdmin) {
             res.status(401);
-            throw new Error('Unauthorized Contact the adminitration');
+            throw new Error("Unauthorized Contact the adminitration");
         }
         const sponsorEmailsRaw = yield prisma_1.prisma.student.findMany({
             select: { sponsorEmail: true },
@@ -375,10 +382,10 @@ const sendMultipleMails = (0, express_async_handler_1.default)((req, res) => __a
             .filter((email) => Boolean(email));
         if (sponsorEmails.length === 0) {
             res.status(404);
-            throw new Error('No valid sponsor emails found');
+            throw new Error("No valid sponsor emails found");
         }
         yield (0, emailService_1.sendBulkMail)({ emails: sponsorEmails, subject, text });
-        res.status(200).json('Email sent successfully');
+        res.status(200).json("Email sent successfully");
     }
     catch (error) {
         throw error;
@@ -394,7 +401,7 @@ const forgetPassword = (0, express_async_handler_1.default)((req, res) => __awai
     try {
         if (!email) {
             res.status(400);
-            throw new Error('Email Required');
+            throw new Error("Email Required");
         }
         // Find user by email
         const user = yield prisma_1.prisma.user.findFirst({
@@ -404,15 +411,15 @@ const forgetPassword = (0, express_async_handler_1.default)((req, res) => __awai
         });
         if (!user) {
             res.status(404);
-            throw new Error('User not found');
+            throw new Error("User not found");
         }
         // Generate reset token
-        const resetToken = crypto_1.default.randomBytes(32).toString('hex');
+        const resetToken = crypto_1.default.randomBytes(32).toString("hex");
         // Hash the reset token before saving to the database
         const hashedToken = crypto_1.default
-            .createHash('sha256')
+            .createHash("sha256")
             .update(resetToken)
-            .digest('hex');
+            .digest("hex");
         const newDate = new Date(Date.now() + 60 * 60 * 1000);
         const updateUser = yield prisma_1.prisma.user.update({
             where: { email: email },
@@ -426,11 +433,11 @@ const forgetPassword = (0, express_async_handler_1.default)((req, res) => __awai
         // Send the email
         (0, emailService_1.sendSingleMail)({
             email,
-            subject: 'Password Reset',
+            subject: "Password Reset",
             text: `You requested a password reset. Please go to this link to reset your password: ${resetUrl}`,
         });
         res.status(200);
-        res.json('Password reset link has been sent to your email');
+        res.json("Password reset link has been sent to your email");
     }
     catch (error) {
         throw error;
@@ -443,15 +450,15 @@ exports.forgetPassword = forgetPassword;
 const resetPassword = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { token } = req.query;
-        if (!token || typeof token !== 'string') {
-            res.status(400).json({ message: 'No token provided' });
+        if (!token || typeof token !== "string") {
+            res.status(400).json({ message: "No token provided" });
             return;
         }
         const { password } = usersValidators_1.resetPasswordSchema.parse(req.body);
         const hashedToken = crypto_1.default
-            .createHash('sha256')
+            .createHash("sha256")
             .update(token)
-            .digest('hex');
+            .digest("hex");
         const user = yield prisma_1.prisma.user.findFirst({
             where: {
                 resetPasswordToken: hashedToken,
@@ -461,7 +468,7 @@ const resetPassword = (0, express_async_handler_1.default)((req, res) => __await
             },
         });
         if (!user) {
-            res.status(400).json({ message: 'Invalid or expired reset token' });
+            res.status(400).json({ message: "Invalid or expired reset token" });
             return;
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, 12);
@@ -478,7 +485,7 @@ const resetPassword = (0, express_async_handler_1.default)((req, res) => __await
             subject: `Password Reset Successful`,
             text: `You have successfully reset your password. </br> NOTE: If you did not initiate this process, please change your password or contact the admin immediately.`,
         });
-        res.status(200).json({ message: 'Password has been reset successfully' });
+        res.status(200).json({ message: "Password has been reset successfully" });
     }
     catch (error) {
         throw error;

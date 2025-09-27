@@ -1,4 +1,4 @@
-import asyncHandler from 'express-async-handler';
+import asyncHandler from "express-async-handler";
 import {
   authUserSchema,
   forgetPasswordSchema,
@@ -7,13 +7,13 @@ import {
   sendBulkMailSchema,
   sendSingleMailSchema,
   updateUserSchema,
-} from '../validators/usersValidators';
-import { prisma } from '../config/db/prisma';
-import bcrypt from 'bcrypt';
-import generateToken from '../utils/generateToken';
-import { Request, Response } from 'express';
-import { sendBulkMail, sendSingleMail } from '../services/emailService';
-import crypto from 'crypto';
+} from "../validators/usersValidators";
+import { prisma } from "../config/db/prisma";
+import bcrypt from "bcrypt";
+import generateToken from "../utils/generateToken";
+import { Request, Response } from "express";
+import { sendBulkMail, sendSingleMail } from "../services/emailService";
+import crypto from "crypto";
 
 // @desc Authenticate User
 // @route POST /api/users/auth
@@ -41,12 +41,12 @@ const authUser = asyncHandler(
 
       if (!user || !(await bcrypt.compare(password, user.password))) {
         res.status(401);
-        throw new Error('Invalid Email or Password');
+        throw new Error("Invalid Email or Password");
       }
 
-      if (user.status === 'suspended') {
+      if (user.status === "suspended") {
         res.status(401);
-        throw new Error('Account deactivated');
+        throw new Error("Account deactivated");
       }
 
       const authenticatedUser = await prisma.user.findUnique({
@@ -65,6 +65,15 @@ const authUser = asyncHandler(
         },
       });
 
+      const currentUserIp = req.ip;
+
+      await prisma.user.update({
+        where: { id: authenticatedUser?.id },
+        data: {
+          currentUserIp,
+        },
+      });
+
       generateToken(res, user.id);
       res.status(200).json(authenticatedUser);
     } catch (error) {
@@ -79,13 +88,13 @@ const authUser = asyncHandler(
 const logoutUser = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     try {
-      res.cookie('jwt', '', {
+      res.cookie("jwt", "", {
         httpOnly: true,
         expires: new Date(0),
       });
 
       res.status(200);
-      res.json({ message: 'Logged out user' });
+      res.json({ message: "Logged out user" });
     } catch (error) {
       throw error;
     }
@@ -110,7 +119,7 @@ const registerUser = asyncHandler(
 
       if (userExit) {
         res.status(400);
-        throw new Error('User already exist');
+        throw new Error("User already exist");
       }
 
       // hash password before saving
@@ -172,7 +181,7 @@ const getUserProfile = asyncHandler(
 
       if (!user) {
         res.status(404);
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
       res.status(200);
       res.json(user);
@@ -208,7 +217,7 @@ const updateUser = asyncHandler(
       });
       if (!user) {
         res.status(404);
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
       // Update fields conditionally
@@ -278,13 +287,12 @@ const getUsers = asyncHandler(
           role: true,
           status: true,
           createdAt: true,
-        
         },
         orderBy: {
-          isAdmin: 'desc'
-        }
+          isAdmin: "desc",
+        },
       });
-      
+
       res.json(users);
     } catch (error) {
       throw error;
@@ -317,7 +325,7 @@ const getUserById = asyncHandler(
       });
       if (!user) {
         res.status(404);
-        throw new Error('User not found!');
+        throw new Error("User not found!");
       }
 
       res.status(200).json(user);
@@ -342,17 +350,17 @@ const deleteUser = asyncHandler(
       if (user) {
         if (user.isAdmin) {
           res.status(400);
-          throw new Error('Can not delete admin user');
+          throw new Error("Can not delete admin user");
         }
         await prisma.user.delete({
           where: {
             id: user.id,
           },
         });
-        res.json({ message: 'User removed' });
+        res.json({ message: "User removed" });
       } else {
         res.status(404);
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
     } catch (error) {
       throw error;
@@ -372,17 +380,17 @@ const sendMail = asyncHandler(
       const user = req.user;
       if (!user) {
         res.status(401);
-        throw new Error('Unauthorized!');
+        throw new Error("Unauthorized!");
       }
 
       if (!user.isAdmin) {
         res.status(401);
-        throw new Error('Unauthorized Contact the adminitration');
+        throw new Error("Unauthorized Contact the adminitration");
       }
 
       await sendSingleMail({ email, subject, text });
       res.status(200);
-      res.json('Email sent successfully');
+      res.json("Email sent successfully");
     } catch (error) {
       throw error;
     }
@@ -401,12 +409,12 @@ const sendMultipleMails = asyncHandler(
       const user = req.user;
       if (!user) {
         res.status(401);
-        throw new Error('Unauthorized!');
+        throw new Error("Unauthorized!");
       }
 
       if (!user.isAdmin) {
         res.status(401);
-        throw new Error('Unauthorized Contact the adminitration');
+        throw new Error("Unauthorized Contact the adminitration");
       }
       const sponsorEmailsRaw = await prisma.student.findMany({
         select: { sponsorEmail: true },
@@ -418,12 +426,12 @@ const sendMultipleMails = asyncHandler(
 
       if (sponsorEmails.length === 0) {
         res.status(404);
-        throw new Error('No valid sponsor emails found');
+        throw new Error("No valid sponsor emails found");
       }
 
       await sendBulkMail({ emails: sponsorEmails, subject, text });
 
-      res.status(200).json('Email sent successfully');
+      res.status(200).json("Email sent successfully");
     } catch (error) {
       throw error;
     }
@@ -440,7 +448,7 @@ const forgetPassword = asyncHandler(
     try {
       if (!email) {
         res.status(400);
-        throw new Error('Email Required');
+        throw new Error("Email Required");
       }
 
       // Find user by email
@@ -451,17 +459,17 @@ const forgetPassword = asyncHandler(
       });
       if (!user) {
         res.status(404);
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
 
       // Generate reset token
-      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetToken = crypto.randomBytes(32).toString("hex");
 
       // Hash the reset token before saving to the database
       const hashedToken = crypto
-        .createHash('sha256')
+        .createHash("sha256")
         .update(resetToken)
-        .digest('hex');
+        .digest("hex");
 
       const newDate = new Date(Date.now() + 60 * 60 * 1000);
       const updateUser = await prisma.user.update({
@@ -478,12 +486,12 @@ const forgetPassword = asyncHandler(
       // Send the email
       sendSingleMail({
         email,
-        subject: 'Password Reset',
+        subject: "Password Reset",
         text: `You requested a password reset. Please go to this link to reset your password: ${resetUrl}`,
       });
 
       res.status(200);
-      res.json('Password reset link has been sent to your email');
+      res.json("Password reset link has been sent to your email");
     } catch (error) {
       throw error;
     }
@@ -497,17 +505,17 @@ const resetPassword = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     try {
       const { token } = req.query;
-      if (!token || typeof token !== 'string') {
-        res.status(400).json({ message: 'No token provided' });
+      if (!token || typeof token !== "string") {
+        res.status(400).json({ message: "No token provided" });
         return;
       }
 
       const { password } = resetPasswordSchema.parse(req.body);
 
       const hashedToken = crypto
-        .createHash('sha256')
+        .createHash("sha256")
         .update(token)
-        .digest('hex');
+        .digest("hex");
 
       const user = await prisma.user.findFirst({
         where: {
@@ -519,7 +527,7 @@ const resetPassword = asyncHandler(
       });
 
       if (!user) {
-        res.status(400).json({ message: 'Invalid or expired reset token' });
+        res.status(400).json({ message: "Invalid or expired reset token" });
         return;
       }
 
@@ -540,7 +548,7 @@ const resetPassword = asyncHandler(
         text: `You have successfully reset your password. </br> NOTE: If you did not initiate this process, please change your password or contact the admin immediately.`,
       });
 
-      res.status(200).json({ message: 'Password has been reset successfully' });
+      res.status(200).json({ message: "Password has been reset successfully" });
     } catch (error) {
       throw error;
     }

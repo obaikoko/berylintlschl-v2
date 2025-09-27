@@ -17,6 +17,7 @@ model User {
   level                String?
   subLevel             String?
   password             String
+  currentUserIp                String?
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
   isAdmin              Boolean        @default(false)

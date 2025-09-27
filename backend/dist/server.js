@@ -22,6 +22,7 @@ const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const port = process.env.PORT || 5000;
 const app = (0, express_1.default)();
+app.set("trust proxy", true);
 const corsOptions = {
     origin: process.env.NODE_ENV === "production"
         ? ["https://www.berylintlschl.com", "https://berylintlschl.com"]
