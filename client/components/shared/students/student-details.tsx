@@ -188,7 +188,7 @@ const StudentDetails = ({ studentId }: StudentId) => {
             </p>
           </div>
         </CardContent>
-        <CardContent className="flex justify-end gap-2">
+        <CardContent className="flex flex-col md:flex-row justify-end gap-2">
           <Button onClick={() => setOpen(true)}>Create Invoice</Button>
           <CreateInvoiceDialog
             open={open}
