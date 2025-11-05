@@ -28,6 +28,8 @@ model User {
   student              Student[]
   result               Result[]
   schemeOfWork         SchemeOfWork[]
+    payments Payment[]
+
 }
 
 model Student {
@@ -55,6 +57,8 @@ model Student {
   isPaid               Boolean   @default(false)
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
+    invoice Invoice[]
+
 
   userId String? @db.ObjectId
   user   User?   @relation(fields: [userId], references: [id])
@@ -226,4 +230,42 @@ type Period {
   subject   String
   startTime String
   endTime   String
+}
+
+
+
+// schema.prisma (add below your existing models)
+model Invoice {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  studentId   String    @db.ObjectId
+  student     Student   @relation(fields: [studentId], references: [id])
+  term        String
+  session     String
+  totalAmount Float
+  status      String    @default("unpaid") // unpaid | partial | paid
+  balance     Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  items       FeeItem[]
+  payments    Payment[]
+}
+
+model FeeItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  invoiceId String   @db.ObjectId
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  name      String
+  amount    Float
+}
+
+model Payment {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  invoiceId    String   @db.ObjectId
+  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  amount       Float
+  method       String   // e.g. "cash" | "transfer" | "POS"
+  recordedById String   @db.ObjectId
+  recordedBy   User     @relation(fields: [recordedById], references: [id], onDelete: Restrict)
+  note         String?
+  paidAt       DateTime @default(now())
 }

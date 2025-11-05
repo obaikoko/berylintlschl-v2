@@ -18,6 +18,8 @@ import crypto from "crypto";
 import { resetPasswordSchema } from "../validators/usersValidators";
 import { classCodeMapping, classProgression } from "../utils/classUtils";
 import cloudinary from "../config/cloudinary";
+import { generateStudentIdCard } from "../utils/generateStudentIdCard";
+import { Student } from "../schemas/studentSchema";
 
 // Authenticate Student
 // @route POST api/student/auth
@@ -800,6 +802,27 @@ const graduateStudent = asyncHandler(
     });
   }
 );
+
+
+ const downloadStudentIdCard = async (req: Request, res: Response) => {
+   try {
+     if (!req.user.superAdmin) {
+       throw new Error("Forbidden! User not allowed");
+     }
+
+     const { id } = req.params;
+
+     // 🔹 Get student data
+     const student = await prisma.student.findUnique({ where: { id } });
+     if (!student) {
+       return res.status(404).json({ message: "Student not found" });
+     }
+     generateStudentIdCard(res, student as Student);
+   } catch (error) {
+     console.error("PDF generation error:", error);
+     res.status(500).json({ message: "Failed to generate ID card" });
+   }
+ };
 export {
   authStudent,
   registerStudent,
@@ -813,4 +836,5 @@ export {
   updateStudent,
   exportStudentsCSV,
   graduateStudent,
+  downloadStudentIdCard,
 };

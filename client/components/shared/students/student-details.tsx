@@ -17,6 +17,8 @@ import { StudentFormData, StudentId } from '@/schemas/studentSchema';
 import DeleteStudentButton from './delete-student-button';
 import Image from 'next/image';
 import MailDialog from '../mail-dailog-box';
+import DownloadStudentIdCard from './download-id-card';
+import CreateInvoiceDialog from '../invoices/create-invoice-dialog';
 
 const StudentDetails = ({ studentId }: StudentId) => {
   const {
@@ -28,6 +30,8 @@ const StudentDetails = ({ studentId }: StudentId) => {
   const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
+    const [open, setOpen] = useState(false);
+
 
   const [formData, setFormData] = useState<StudentFormData>({
     firstName: '',
@@ -105,20 +109,20 @@ const StudentDetails = ({ studentId }: StudentId) => {
   };
 
   return (
-    <div className='max-w-4xl mx-auto p-6 space-y-6'>
-      <h1 className='text-3xl font-semibold'>Student Profile</h1>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <h1 className="text-3xl font-semibold">Student Profile</h1>
       <Card>
-        <CardContent className='p-6 flex gap-6'>
+        <CardContent className="p-6 flex gap-6">
           {student.imageUrl ? (
             <Image
-              className='rounded'
+              className="rounded"
               width={150}
               height={120}
-              alt='Image'
+              alt="Image"
               src={`${student.imageUrl}`}
             />
           ) : (
-            <Avatar className='w-24 h-24'>
+            <Avatar className="w-24 h-24">
               <AvatarImage
                 src={`https://ui-avatars.com/api/?name=${student.lastName}+${student.firstName}`}
               />
@@ -129,21 +133,21 @@ const StudentDetails = ({ studentId }: StudentId) => {
             </Avatar>
           )}
 
-          <div className='space-y-1'>
-            <h2 className='text-xl font-medium'>
+          <div className="space-y-1">
+            <h2 className="text-xl font-medium">
               {student.lastName} {student.firstName} {student.otherName}
             </h2>
-            <p className='text-sm text-muted-foreground'>
+            <p className="text-sm text-muted-foreground">
               ID: {student.studentId}
             </p>
-            <p className='text-sm'>Gender: {student.gender}</p>
-            <p className='text-sm'>
+            <p className="text-sm">Gender: {student.gender}</p>
+            <p className="text-sm">
               Date of Birth: {formatDateTime(student.dateOfBirth)}
             </p>
-            <p className='text-sm'>
+            <p className="text-sm">
               Level: {student.level} - {student.subLevel}
             </p>
-            <p className='text-sm'>
+            <p className="text-sm">
               Admitted: {formatDateTime(student.yearAdmitted)}
             </p>
           </div>
@@ -151,8 +155,8 @@ const StudentDetails = ({ studentId }: StudentId) => {
       </Card>
 
       <Card>
-        <CardContent className='p-6 grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <div className='space-y-2'>
+        <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
             <p>
               <strong>State of Origin:</strong> {student.stateOfOrigin}
             </p>
@@ -163,13 +167,13 @@ const StudentDetails = ({ studentId }: StudentId) => {
               <strong>Home Town:</strong> {student.homeTown}
             </p>
             <p>
-              <strong>Fees Paid:</strong> {student.isPaid ? 'Yes' : 'No'}
+              <strong>Fees Paid:</strong> {student.isPaid ? "Yes" : "No"}
             </p>
             <p>
-              <strong> Student:</strong> {student.isStudent ? 'Yes' : 'No'}
+              <strong> Student:</strong> {student.isStudent ? "Yes" : "No"}
             </p>
           </div>
-          <div className='space-y-2'>
+          <div className="space-y-2">
             <p>
               <strong>Sponsor Name:</strong> {student.sponsorName}
             </p>
@@ -184,12 +188,19 @@ const StudentDetails = ({ studentId }: StudentId) => {
             </p>
           </div>
         </CardContent>
-        <CardContent className='flex justify-end gap-2'>
+        <CardContent className="flex justify-end gap-2">
+          <Button onClick={() => setOpen(true)}>Create Invoice</Button>
+          <CreateInvoiceDialog
+            open={open}
+            onClose={() => setOpen(false)}
+            studentId={studentId}
+          />
+          <DownloadStudentIdCard student={student} />
           <MailDialog email={student.sponsorEmail} />
           <DeleteStudentButton studentId={studentId} />
           <Button
-            variant='outline'
-            className='cursor-pointer'
+            variant="outline"
+            className="cursor-pointer"
             onClick={handleEditClick}
           >
             Edit
@@ -201,10 +212,10 @@ const StudentDetails = ({ studentId }: StudentId) => {
 
       <Card>
         <CardContent>
-          <p className='text-sm text-muted-foreground text-left'>
+          <p className="text-sm text-muted-foreground text-left">
             Registered On: {formatDateTime(student.createdAt)}
           </p>
-          <p className='text-sm text-muted-foreground text-left'>
+          <p className="text-sm text-muted-foreground text-left">
             Last Modified: {formatDateTime(student.updatedAt)}
           </p>
         </CardContent>

@@ -16,6 +16,7 @@ router.route('/register').post(authMiddleware_1.protect, authMiddleware_1.admin,
 router.route('/forget-password').post(studentController_1.forgetPassword);
 router.route('/reset-password').put(studentController_1.resetPassword);
 router.route('/graduate').put(authMiddleware_1.protect, authMiddleware_1.admin, studentController_1.graduateStudent);
+router.get("/:id/id-card", authMiddleware_1.protect, authMiddleware_1.admin, studentController_1.downloadStudentIdCard);
 router.route('/auth').post(studentController_1.authStudent);
 router
     .route('/:id')

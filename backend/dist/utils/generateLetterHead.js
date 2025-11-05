@@ -27,7 +27,7 @@ const generateLetterHeadHTML = (result) => {
  
         <!-- School Logo -->
         <div>
-          <img src="https://res.cloudinary.com/dzajrh9z7/image/upload/v1726781636/beryl/epfme50v5t4l66i6fzx3.jpg" alt="School Logo" style="height: 80px;" />
+          <img src=${process.env.SCHOOL_LOGO} alt="School Logo" style="height: 80px;" />
         </div>
       </div>
 

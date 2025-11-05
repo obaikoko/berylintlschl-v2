@@ -158,3 +158,24 @@ export const subjectColors: Record<string, string> = {
   'Civic Education': 'bg-orange-100 text-orange-800',
   'Free Period': 'bg-muted text-muted-foreground',
 };
+
+
+export const invoiceItems: string[] = [
+  "Registration",
+  "Tuition",
+  "Report Card",
+  "Text Books",
+  "Exam Fee",
+  "Social Fee",
+  "Lesson",
+  "First  AID",
+  "Laboratory",
+  "Sport",
+  "Uniform",
+  "Computer",
+  "P.T.A",
+  "Development",
+  "Library",
+  "Caution",
+  "Continuous Assesment",
+];

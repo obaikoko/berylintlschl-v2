@@ -11,6 +11,7 @@ import {
   graduateStudent,
   resetPassword,
   getStudentProfile,
+  downloadStudentIdCard,
 } from '../controllers/studentController';
 import { protect, admin } from '../middleware/authMiddleware';
 import express from 'express';
@@ -25,6 +26,7 @@ router.route('/register').post(protect, admin, registerStudent);
 router.route('/forget-password').post(forgetPassword);
 router.route('/reset-password').put(resetPassword);
 router.route('/graduate').put(protect, admin, graduateStudent);
+router.get("/:id/id-card", protect, admin, downloadStudentIdCard);
 
 router.route('/auth').post(authStudent);
 router

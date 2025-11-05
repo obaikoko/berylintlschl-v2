@@ -11,6 +11,7 @@ import eventRoute from "./routes/eventRoutes";
 import announcementRoute from "./routes/announcementRoute";
 import schemeOfWorkRoute from "./routes/schemeOfWorkRoute";
 import timeTableRoute from "./routes/timeTableRoute";
+import billingRoute from "./routes/billingRoutes";
 import { notFound, errorHandler } from "./middleware/errorMiddleware";
 import cookieParser = require("cookie-parser");
 import cors from "cors";
@@ -45,6 +46,8 @@ app.use("/api/events", eventRoute);
 app.use("/api/announcements", announcementRoute);
 app.use("/api/schemes", schemeOfWorkRoute);
 app.use("/api/timeTable", timeTableRoute);
+app.use("/api/billing", billingRoute);
+
 app.use(errorHandler);
 app.use(notFound);
 app.listen(port, () => console.log(`Server running on port ${port}`));

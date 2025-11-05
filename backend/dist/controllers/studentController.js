@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.graduateStudent = exports.exportStudentsCSV = exports.updateStudent = exports.resetPassword = exports.forgetPassword = exports.deleteStudent = exports.getStudentProfile = exports.getStudent = exports.getStudentsRegisteredByUser = exports.getAllStudents = exports.registerStudent = exports.authStudent = void 0;
+exports.downloadStudentIdCard = exports.graduateStudent = exports.exportStudentsCSV = exports.updateStudent = exports.resetPassword = exports.forgetPassword = exports.deleteStudent = exports.getStudentProfile = exports.getStudent = exports.getStudentsRegisteredByUser = exports.getAllStudents = exports.registerStudent = exports.authStudent = void 0;
 // src/controllers/studentController.ts
 const json2csv_1 = require("json2csv");
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
@@ -25,6 +25,7 @@ const crypto_1 = __importDefault(require("crypto"));
 const usersValidators_1 = require("../validators/usersValidators");
 const classUtils_1 = require("../utils/classUtils");
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
+const generateStudentIdCard_1 = require("../utils/generateStudentIdCard");
 // Authenticate Student
 // @route POST api/student/auth
 // privacy Public
@@ -681,3 +682,22 @@ const graduateStudent = (0, express_async_handler_1.default)((req, res) => __awa
     })));
 }));
 exports.graduateStudent = graduateStudent;
+const downloadStudentIdCard = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!req.user.superAdmin) {
+            throw new Error("Forbidden! User not allowed");
+        }
+        const { id } = req.params;
+        // 🔹 Get student data
+        const student = yield prisma_1.prisma.student.findUnique({ where: { id } });
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        (0, generateStudentIdCard_1.generateStudentIdCard)(res, student);
+    }
+    catch (error) {
+        console.error("PDF generation error:", error);
+        res.status(500).json({ message: "Failed to generate ID card" });
+    }
+});
+exports.downloadStudentIdCard = downloadStudentIdCard;

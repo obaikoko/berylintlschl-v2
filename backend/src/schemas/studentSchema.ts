@@ -1,6 +1,7 @@
-import { insertStudentSchema } from '../validators/studentValidators';
-import { z } from 'zod';
+import { insertStudentSchema } from "../validators/studentValidators";
+import { z } from "zod";
 export type Student = z.infer<typeof insertStudentSchema> & {
+  id: string;
   studentId: string;
   password: string;
   isStudent: boolean;
