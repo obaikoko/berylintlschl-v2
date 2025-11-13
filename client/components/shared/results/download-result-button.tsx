@@ -17,42 +17,54 @@ import { showZodErrors } from '@/lib/utils';
 const DownloadResult = ({ resultId }: { resultId: string }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+const handleDownload = async () => {
+  try {
+    setLoading(true);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/results/pdf/${resultId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
 
-  const handleDownload = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/results/pdf/${resultId}`,
-        {
-          method: 'GET',
-          credentials: 'include',
-        }
-      );
-
-      if (!res.ok) {
-        toast.error('Failed to download PDF');
-
-        return;
+    if (!res.ok) {
+      // Try to read response message if available
+      let errorMessage = "Failed to download PDF";
+      try {
+        const data = await res.json();
+        if (data?.message) errorMessage = data.message;
+      } catch {
+        // Fallback to text if JSON parsing fails
+        const text = await res.text();
+        if (text) errorMessage = text;
       }
 
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `result-${resultId}.pdf`;
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-
-      // Close only after successful download
-      setOpen(false);
-    } catch (error) {
-      showZodErrors(error);
-    } finally {
-      setLoading(false);
+      toast.error(errorMessage);
+      return;
     }
-  };
+
+    // If successful, get the PDF blob
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `result-${resultId}.pdf`;
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+
+    toast.success("PDF downloaded successfully!");
+    setOpen(false);
+  } catch (error) {
+    console.error("Download error:", error);
+    showZodErrors(error);
+    toast.error("An unexpected error occurred.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>

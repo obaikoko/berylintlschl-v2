@@ -23,7 +23,12 @@ router
     .get(authMiddleware_1.protect, resultController_1.getResult)
     .put(authMiddleware_1.protect, resultController_1.updateResult)
     .delete(authMiddleware_1.protect, resultController_1.deleteResult);
-router.route('/student/:id').get(authMiddleware_1.protect, resultController_1.getStudentResults);
+router
+    .route("/student/:id")
+    .get(authMiddleware_1.protect, resultController_1.getStudentResults)
+    .put(authMiddleware_1.protect, resultController_1.removeSubjectFromStudentResult);
+;
+router.route("/student/:id/add").put(authMiddleware_1.protect, resultController_1.addSubjectToResults);
 router.route('/pdf/:id').get(resultController_1.exportResult);
 router.route('/').get(authMiddleware_1.protect, resultController_1.getResults);
 exports.default = router;

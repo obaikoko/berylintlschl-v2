@@ -163,7 +163,7 @@ ${generateLetterHeadHTML(result)}
   </tr>
   <tr class="footer">
     <td colspan="8">
-     Principals/Head Teachers Remark: ${result.principalRemark}
+     Principals/Head: ${result.principalRemark}
     </td>
   </tr>
   <tr class="footer">

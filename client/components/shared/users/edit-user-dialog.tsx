@@ -11,11 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import { levels, subLevels, roles, statuses } from '@/lib/utils';
 
-const ROLES = ['Admin', 'Principal', 'HM', 'Head Of Department', 'Teacher'];
-const LEVELS = ['JSS 1', 'JSS 2', 'JSS 3', 'SSS 1', 'SSS 2', 'SSS 3'];
-const SUB_LEVELS = ['A', 'B', 'C', 'D', 'E'];
-const STATUSES = ['active', 'suspended'];
+
 
 interface EditUserFormData {
   userId?: string;
@@ -68,107 +66,107 @@ export default function EditUserDialog({
 
           <form
             onSubmit={onSubmit}
-            className='max-h-[350px] overflow-y-auto space-y-4'
+            className="max-h-[350px] overflow-y-auto space-y-4"
           >
             <Input
-              name='firstName'
+              name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
-              placeholder='First Name'
+              placeholder="First Name"
             />
             <Input
-              name='lastName'
+              name="lastName"
               value={formData.lastName}
               onChange={handleInputChange}
-              placeholder='Last Name'
+              placeholder="Last Name"
             />
             <Input
-              name='email'
+              name="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder='Email'
+              placeholder="Email"
             />
 
-            <Label htmlFor='role'>Select Role</Label>
+            <Label htmlFor="role">Select Role</Label>
             <select
-              name='role'
+              name="role"
               value={formData.role}
               onChange={handleInputChange}
-              className='w-full border rounded p-2 bg-background text-foreground'
+              className="w-full border rounded p-2 bg-background text-foreground"
             >
-              <option value=''>Assign Role</option>
-              {ROLES.map((role) => (
+              <option value="">Assign Role</option>
+              {roles.map((role) => (
                 <option key={role} value={role}>
                   {role}
                 </option>
               ))}
             </select>
 
-            <Label htmlFor='level'>Select Level</Label>
+            <Label htmlFor="level">Select Level</Label>
             <select
-              name='level'
+              name="level"
               value={formData.level}
               onChange={handleInputChange}
-              className='w-full border rounded p-2 bg-background text-foreground'
+              className="w-full border rounded p-2 bg-background text-foreground"
             >
-              <option value=''>Select Level</option>
-              {LEVELS.map((lvl) => (
+              <option value="">Select Level</option>
+              {levels.map((lvl) => (
                 <option key={lvl} value={lvl}>
                   {lvl}
                 </option>
               ))}
             </select>
 
-            <Label htmlFor='subLevel'>Select Sub-Level</Label>
+            <Label htmlFor="subLevel">Select Sub-Level</Label>
             <select
-              name='subLevel'
+              name="subLevel"
               value={formData.subLevel}
               onChange={handleInputChange}
-              className='w-full border rounded p-2 bg-background text-foreground'
+              className="w-full border rounded p-2 bg-background text-foreground"
             >
-              <option value=''>Select Sub-Level</option>
-              {SUB_LEVELS.map((sub) => (
+              <option value="">Select Sub-Level</option>
+              {subLevels.map((sub) => (
                 <option key={sub} value={sub}>
                   {sub}
                 </option>
               ))}
             </select>
 
-            <Label htmlFor='status'>Select Status</Label>
+            <Label htmlFor="status">Select Status</Label>
             <select
-              name='status'
+              name="status"
               value={formData.status}
               onChange={handleInputChange}
-              className='w-full border rounded p-2 bg-background text-foreground'
+              className="w-full border rounded p-2 bg-background text-foreground"
             >
-              <option value=''>Select Status</option>
-              {STATUSES.map((status) => (
+              <option value="">Select Status</option>
+              {statuses.map((status) => (
                 <option key={status} value={status}>
                   {status}
                 </option>
               ))}
             </select>
 
-            <Label htmlFor='isAdmin'>Is Admin?</Label>
+            <Label htmlFor="isAdmin">Is Admin?</Label>
             <select
-              name='isAdmin'
+              name="isAdmin"
               value={formData.isAdmin}
               onChange={handleInputChange}
-              className='w-full border rounded p-2 bg-background text-foreground'
+              className="w-full border rounded p-2 bg-background text-foreground"
             >
-              <option value=''>Select Option</option>
-              <option value='true'>Yes</option>
-              <option value='false'>No</option>
+              <option value="">Select Option</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
 
-            <Button type='submit' disabled={isLoading} className='w-full'>
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? (
                 <>
-                  <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   Updating...
                 </>
               ) : (
-                'Update User'
+                "Update User"
               )}
             </Button>
           </form>

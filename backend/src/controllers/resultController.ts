@@ -272,20 +272,21 @@ const updateResult = asyncHandler(
       throw new Error('Result not found');
     }
 
-    if (
-      result.level !== req.user.level ||
-      result.subLevel !== req.user.subLevel
-    ) {
-      res.status(401);
-      throw new Error(
-        'Unable to update this result, Please contact the class teacher'
-      );
-    }
+  
 
     // --- Update subjectResults array ---
     let updatedSubjectResults = result.subjectResults;
 
     if (subject) {
+        if (
+          result.level !== req.user.level ||
+          result.subLevel !== req.user.subLevel
+        ) {
+          res.status(401);
+          throw new Error(
+            "Unable to update this result, Please contact the class teacher"
+          );
+        }
       const index = updatedSubjectResults.findIndex(
         (s) => s.subject === subject
       );
@@ -626,6 +627,92 @@ const manualSubjectRemoval = asyncHandler(
   }
 );
 
+
+const addSubjectToStudentResult = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const { subjectName } = req.body;
+
+    const result = await prisma.result.findUnique({
+      where: { id: req.params.id },
+    });
+
+    if (!result) {
+      res.status(404);
+      throw new Error("Result not found!");
+    }
+
+    if (!subjectName) {
+      res.status(400);
+      throw new Error("Subject name is required.");
+    }
+
+    // Create a new subject object
+    const newSubject = {
+      subject: subjectName,
+      testScore: 0,
+      examScore: 0,
+      totalScore: 0,
+      grade: "-",
+    };
+
+    //  Merge old + new subject list (make sure subjectResults exists)
+    const updatedSubjects = [...(result.subjectResults as any[]), newSubject];
+
+    await prisma.result.update({
+      where: { id: result.id },
+      data: { subjectResults: updatedSubjects },
+    });
+
+    res
+      .status(200)
+      .json(
+        `${subjectName} added to ${result.firstName}'s result successfully.`
+      );
+  }
+);
+
+const removeSubjectFromStudentResult = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const { subjectName } = req.body;
+    const result = await prisma.result.findUnique({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!result) {
+      res.status(404);
+      throw new Error("Result not found!");
+    }
+
+    if (!subjectName) {
+      res.status(400);
+      throw new Error("Subject required");
+    }
+
+    const updatedSubjects = result.subjectResults.filter(
+      (s: any) => s.subject !== subjectName
+    );
+
+    await prisma.result.update({
+      where: {
+        id: result.id,
+      },
+
+      data: {
+        subjectResults: updatedSubjects,
+      },
+    });
+
+    res
+      .status(200)
+      .json(
+        `${subjectName} removed from ${result.firstName}'s result successfully.`
+      );
+  }
+);
+
+
 const resultData = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     if (!req.user) {
@@ -788,6 +875,8 @@ export {
   generateBroadsheet,
   addSubjectToResults,
   manualSubjectRemoval,
+  addSubjectToStudentResult,
+  removeSubjectFromStudentResult,
   resultData,
   studentResultData,
   exportResult,
