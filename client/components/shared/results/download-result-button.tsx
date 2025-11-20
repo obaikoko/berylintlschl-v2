@@ -13,10 +13,12 @@ import {
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { showZodErrors } from '@/lib/utils';
+import { useGetResultQuery } from '@/src/features/results/resultApiSlice';
 
 const DownloadResult = ({ resultId }: { resultId: string }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const {data} = useGetResultQuery(resultId)
 const handleDownload = async () => {
   try {
     setLoading(true);
@@ -50,7 +52,7 @@ const handleDownload = async () => {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `result-${resultId}.pdf`;
+    a.download = `result-${data?.firstName}-${data?.lastName}.pdf`;
     a.click();
 
     window.URL.revokeObjectURL(url);
