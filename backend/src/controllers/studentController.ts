@@ -41,6 +41,7 @@ const authStudent = asyncHandler(
           firstName: true,
           lastName: true,
           otherName: true,
+          level: true,
           password: true,
         },
       });
@@ -53,6 +54,14 @@ const authStudent = asyncHandler(
         res.status(401);
         throw new Error("Invalid Email or Password");
       }
+
+     if (student.level === "Withdrawn") {
+       res.status(401);
+       throw new Error(
+         "Your account has been withdrawn and cannot be accessed. Please contact the school administrator for assistance."
+       );
+     }
+
 
       const authenticatedStudent = await prisma.student.findFirst({
         where: {
@@ -521,7 +530,6 @@ const updateStudent = asyncHandler(
       sponsorEmail,
       image,
     } = validateData;
-    
 
     if (!req.user) {
       res.status(401);
@@ -610,7 +618,7 @@ const updateStudent = asyncHandler(
         sponsorEmail: sponsorEmail ?? student.sponsorEmail,
         sponsorPhoneNumber: sponsorPhoneNumber ?? student.sponsorPhoneNumber,
         imageUrl: student.imageUrl,
-        imagePublicId: student.imagePublicId
+        imagePublicId: student.imagePublicId,
       },
     });
 
@@ -803,26 +811,25 @@ const graduateStudent = asyncHandler(
   }
 );
 
+const downloadStudentIdCard = async (req: Request, res: Response) => {
+  try {
+    if (!req.user.superAdmin) {
+      throw new Error("Forbidden! User not allowed");
+    }
 
- const downloadStudentIdCard = async (req: Request, res: Response) => {
-   try {
-     if (!req.user.superAdmin) {
-       throw new Error("Forbidden! User not allowed");
-     }
+    const { id } = req.params;
 
-     const { id } = req.params;
-
-     // 🔹 Get student data
-     const student = await prisma.student.findUnique({ where: { id } });
-     if (!student) {
-       return res.status(404).json({ message: "Student not found" });
-     }
-     generateStudentIdCard(res, student as Student);
-   } catch (error) {
-     console.error("PDF generation error:", error);
-     res.status(500).json({ message: "Failed to generate ID card" });
-   }
- };
+    // 🔹 Get student data
+    const student = await prisma.student.findUnique({ where: { id } });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    generateStudentIdCard(res, student as Student);
+  } catch (error) {
+    console.error("PDF generation error:", error);
+    res.status(500).json({ message: "Failed to generate ID card" });
+  }
+};
 export {
   authStudent,
   registerStudent,

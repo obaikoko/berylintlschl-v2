@@ -4,7 +4,7 @@ exports.subjectResultSchema = exports.generatePositionsSchema = exports.updateRe
 const zod_1 = require("zod");
 exports.createResultSchema = zod_1.z.object({
     session: zod_1.z.string().min(3, 'session cannot be less than 3 characters'),
-    level: zod_1.z.string().min(3, 'level cannot be less than 3 characters'),
+    level: zod_1.z.string().min(2, 'level cannot be less than 2 characters'),
     term: zod_1.z.string().min(3, 'term cannot be less than 3 characters'),
 });
 exports.updateResultSchema = zod_1.z.object({
