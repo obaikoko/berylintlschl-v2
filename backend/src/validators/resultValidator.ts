@@ -48,13 +48,13 @@ export const updateResultPaymentSchema = z.object({
 });
 
 export const generatePositionsSchema = z.object({
-  level: z.string().min(3, 'level should be at least 3 characters'),
+  level: z.string().min(2, 'level should be at least 3 characters'),
   subLevel: z.string().min(1, 'sub level should be at least 1 character'),
   session: z.string().min(3, 'level should be at least 3 characters'),
   term: z.string().min(3, 'level should be at least 3 characters'),
 });
 export const subjectResultSchema = z.object({
-  level: z.string().min(3, 'level should be at least 3 characters'),
+  level: z.string().min(2, 'level should be at least 3 characters'),
   subjectName: z.string().min(3, 'subject should be at least 3 characters'),
   session: z.string().min(3, 'level should be at least 3 characters'),
   term: z.string().min(3, 'level should be at least 3 characters'),
