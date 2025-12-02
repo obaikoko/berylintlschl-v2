@@ -93,7 +93,7 @@ const ResultDetails = ({ resultId }: { resultId: string }) => {
       <Card>
         <CardContent>
           <p>
-            Class Teacher&apos;s Remark: {result.principalRemark ?? "_______"}
+            Class Teacher&apos;s Remark: {result.teacherRemark ?? "_______"}
           </p>
         </CardContent>
         <CardContent>

@@ -25,14 +25,15 @@ interface UpdateRemarkProps {
 }
 
 export default function UpdateRemark({ resultId }: UpdateRemarkProps) {
-  const [formData, setFormData] = useState({
-    teacherRemark: "",
-    principalRemark: "",
-  });
+    const { data, refetch } = useGetResultQuery(resultId, { skip: !resultId });
+
+   const [formData, setFormData] = useState({
+     teacherRemark: data?.teacherRemark,
+     principalRemark: data?.principalRemark,
+   });
   const [open, setOpen] = useState(false);
 
   const { teacherRemark, principalRemark } = formData;
-  const { refetch } = useGetResultQuery(resultId, { skip: !resultId });
   const [updateResult, { isLoading }] = useUpdateResultMutation();
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

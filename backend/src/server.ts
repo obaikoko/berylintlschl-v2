@@ -7,6 +7,7 @@ import admissionRoute from "./routes/admissionRoutes";
 import dataRoute from "./routes/dataRoutes";
 import resultRoute from "./routes/resultRoutes";
 import nextTermRoute from "./routes/nextTermRoute";
+import subjectRoute from "./routes/subjectRoutes";
 import eventRoute from "./routes/eventRoutes";
 import announcementRoute from "./routes/announcementRoute";
 import schemeOfWorkRoute from "./routes/schemeOfWorkRoute";
@@ -41,6 +42,8 @@ app.use("/api/staff", staffRoute);
 app.use("/api/data", dataRoute);
 app.use("/api/admission", admissionRoute);
 app.use("/api/results", resultRoute);
+app.use("/api/subjects", subjectRoute);
+
 app.use("/api/nextTerm", nextTermRoute);
 app.use("/api/events", eventRoute);
 app.use("/api/announcements", announcementRoute);
