@@ -109,6 +109,7 @@ export const subjects: string[] = [
   "Economics",
   "English Language",
   "Financial Accounting",
+  "Food And Nutrition",
   "French",
   "Further Mathematics",
   "Games",
@@ -122,7 +123,6 @@ export const subjects: string[] = [
   "Integrated Science",
   "Islamic Religious Studies",
   "Language Practices",
-
   "Literature in English",
   "Mathematics",
   "Moral Intruction",
@@ -147,6 +147,7 @@ export const subjects: string[] = [
   "Social Studies",
   "Social Habit",
   "Spelling Bee",
+  "Tourism",
   "Verbal Reasoning",
   "Vocational Aptitude",
 ];
