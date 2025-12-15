@@ -117,7 +117,7 @@ const ManageSubjects = ({ resultId }: { resultId: string }) => {
               className="my-3 w-full"
               disabled={isLoading}
             >
-              {isLoading ? "Adding..." : "Submit"}
+              {isLoading ? "processing..." : "Submit"}
             </Button>
           </form>
         </DialogContent>
