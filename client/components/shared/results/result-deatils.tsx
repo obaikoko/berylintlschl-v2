@@ -97,7 +97,13 @@ const ResultDetails = ({ resultId }: { resultId: string }) => {
           </p>
         </CardContent>
         <CardContent>
-          <p>Principal&apos;s Remark: {result.principalRemark ?? "_______"}</p>
+          {result.level.startsWith("S") || result.level.startsWith("J") ? (
+            <p>
+              Principal&apos;s Remark: {result.principalRemark ?? "_______"}
+            </p>
+          ) : (
+            <p>Head Mistress Remark: {result.principalRemark ?? "_______"}</p>
+          )}
         </CardContent>
       </Card>
 
