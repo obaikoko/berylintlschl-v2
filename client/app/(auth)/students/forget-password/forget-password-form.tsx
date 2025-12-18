@@ -35,24 +35,24 @@ const StudentForgetPasswordForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-gray-500">
       <div className="space-y-2">
-        <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-          Student Email Address
+        <Label htmlFor="studentId" className="text-sm font-medium text-gray-700">
+          Student ID
         </Label>
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            placeholder="Enter your student email"
+            id="studentId"
+            type="studentId"
+            autoComplete="studentId"
+            placeholder="Enter your student studentId"
             className="pl-10 h-11 border-gray-200 focus:border-green-500 focus:ring-green-500"
-            {...register('email')}
+            {...register('studentId')}
           />
         </div>
-        {errors.email && (
+        {errors.studentId && (
           <p className="text-red-500 text-sm mt-1 flex items-center">
             <span className="w-1 h-1 bg-red-500 rounded-full mr-2" />
-            {errors.email.message}
+            {errors.studentId.message}
           </p>
         )}
       </div>

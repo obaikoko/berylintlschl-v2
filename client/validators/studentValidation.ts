@@ -87,7 +87,7 @@ export const nextTermDetailsSchema = z.object({
   nextTermFee: z.coerce.number().min(-1, 'Amount cannot be less than 0'),
   session: z.string().min(1, 'Session cannot be empty'),
   term: z.string().min(3, 'Term cannot be empty'),
-  level: z.string().min(3, 'Level/Class cannot be empty'),
+  level: z.string().min(2, 'Level/Class cannot be empty'),
   reOpeningDate: z.string().min(3, ' Re-opening date cannot be empty '),
   busFee: z.coerce.number().min(-1, 'Bus fee cannot be less than 0').optional(),
   otherCharges: z.string().optional(),
