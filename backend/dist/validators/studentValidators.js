@@ -80,7 +80,7 @@ exports.nextTermDetailsSchema = zod_1.z.object({
     nextTermFee: zod_1.z.coerce.number().min(-1, 'Amount cannot be less than 0'),
     session: zod_1.z.string().min(1, 'Session cannot be empty'),
     term: zod_1.z.string().min(3, 'Term cannot be empty'),
-    level: zod_1.z.string().min(3, 'Level/Class cannot be empty'),
+    level: zod_1.z.string().min(2, 'Level/Class cannot be empty'),
     reOpeningDate: zod_1.z.string().min(3, ' Re-opening date cannot be empty '),
     busFee: zod_1.z.coerce.number().min(-1, 'Bus fee cannot be less than 0').optional(),
     otherCharges: zod_1.z.coerce.number().optional(),
@@ -88,5 +88,5 @@ exports.nextTermDetailsSchema = zod_1.z.object({
 exports.getNextTermDetailsSchema = zod_1.z.object({
     session: zod_1.z.string().min(3, 'Session should be more than 3 characters'),
     term: zod_1.z.string().min(3, 'term should be more than 3 characters'),
-    level: zod_1.z.string().min(3, 'level should be more than 3 characters'),
+    level: zod_1.z.string().min(2, 'level should be more than 2 characters'),
 });

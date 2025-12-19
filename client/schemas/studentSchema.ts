@@ -12,6 +12,8 @@ import {
 
 export type AuthStudentForm = z.infer<typeof authStudentSchema>;
 export type RegisterStudentForm = z.infer<typeof registerStudentSchema>;
+export type ForgetPasswordForm = z.infer<typeof forgetPasswordSchema>;
+
 export type EditStudentForm = z.infer<typeof editStudentSchema> & {
   studentId: string;
 };

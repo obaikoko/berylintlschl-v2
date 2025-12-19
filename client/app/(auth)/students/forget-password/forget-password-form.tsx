@@ -8,9 +8,9 @@ import { Mail, ArrowRight, GraduationCap } from 'lucide-react';
 import { useForgetStudentPasswordMutation } from '@/src/features/students/studentApiSlice';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { forgetPasswordSchema } from '@/validators/userValidators';
+import { forgetPasswordSchema } from '@/validators/studentValidation';
 import { showZodErrors } from '@/lib/utils';
-import { ForgetPasswordForm as ForgetPaswordFormType } from '@/schemas/userSchema';
+import { ForgetPasswordForm as ForgetPaswordFormType } from '@/schemas/studentSchema';
 
 const StudentForgetPasswordForm = () => {
   const [forgetPassword, { isLoading }] = useForgetStudentPasswordMutation();

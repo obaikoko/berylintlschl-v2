@@ -7,18 +7,18 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const resultController_1 = require("../controllers/resultController");
 const router = express_1.default.Router();
-router.route('/positions').post(authMiddleware_1.protect, resultController_1.generatePositions);
-router.route('/broadsheet').post(authMiddleware_1.protect, resultController_1.generateBroadsheet);
-router.route('/payment').put(authMiddleware_1.protect, resultController_1.updateResultPayment);
+router.route("/positions").post(authMiddleware_1.protect, resultController_1.generatePositions);
+router.route("/broadsheet").post(authMiddleware_1.protect, resultController_1.generateBroadsheet);
+router.route("/payment").put(authMiddleware_1.protect, resultController_1.updateResultPayment);
 router
-    .route('/subjects')
+    .route("/subjects")
     .put(authMiddleware_1.protect, resultController_1.manualSubjectRemoval)
     .post(authMiddleware_1.protect, resultController_1.addSubjectToResults);
-router.route('/data').get(authMiddleware_1.protect, resultController_1.resultData);
-router.route('/data/student-results').get(authMiddleware_1.protect, resultController_1.studentResultData);
-router.route('/pdf').get(resultController_1.exportManyResults);
+router.route("/data").get(authMiddleware_1.protect, resultController_1.resultData);
+router.route("/data/student-results").get(authMiddleware_1.protect, resultController_1.studentResultData);
+router.route("/pdf").get(resultController_1.exportManyResults);
 router
-    .route('/:id')
+    .route("/:id")
     .post(authMiddleware_1.protect, resultController_1.createResult)
     .get(authMiddleware_1.protect, resultController_1.getResult)
     .put(authMiddleware_1.protect, resultController_1.updateResult)
@@ -27,8 +27,7 @@ router
     .route("/student/:id")
     .get(authMiddleware_1.protect, resultController_1.getStudentResults)
     .put(authMiddleware_1.protect, resultController_1.removeSubjectFromStudentResult);
-;
-router.route("/student/:id/add").put(authMiddleware_1.protect, resultController_1.addSubjectToResults);
-router.route('/pdf/:id').get(resultController_1.exportResult);
-router.route('/').get(authMiddleware_1.protect, resultController_1.getResults);
+router.route("/student/:id/add").put(authMiddleware_1.protect, resultController_1.addSubjectToStudentResult);
+router.route("/pdf/:id").get(resultController_1.exportResult);
+router.route("/").get(authMiddleware_1.protect, resultController_1.getResults);
 exports.default = router;
