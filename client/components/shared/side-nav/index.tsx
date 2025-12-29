@@ -16,6 +16,7 @@ import {
   X,
   Timer,
   DollarSign,
+  PenBox,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -27,6 +28,7 @@ const navItems = [
   { label: "Users", href: "/admin/users", icon: Users2 },
   { label: "Students", href: "/admin/students", icon: GraduationCap },
   { label: "Results", href: "/admin/results", icon: FileText },
+  { label: "Subjects", href: "/admin/subjects", icon: PenBox },
   { label: "Staff", href: "/admin/staff", icon: UserCog },
   { label: "Scheme of work", href: "/admin/scheme", icon: BadgePlus },
   { label: "Time table", href: "/admin/time-table", icon: Timer },

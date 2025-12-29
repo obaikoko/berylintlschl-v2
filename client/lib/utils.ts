@@ -129,7 +129,7 @@ export const subjects: string[] = [
   "Music",
   "Nigerian Language",
   "Number Work",
-  "Nursery Rhymes/Poems",
+  "Nursery Rhymes/Poems", 
   "Object Identification",
   "Oral Number Work",
   "Phonics",

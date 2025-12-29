@@ -32,14 +32,14 @@ const createResult = (0, express_async_handler_1.default)((req, res) => __awaite
     const user = req.user;
     if (!user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const student = yield prisma_1.prisma.student.findUnique({
         where: { id },
     });
     if (!student) {
         res.status(400);
-        throw new Error('Student does not exist');
+        throw new Error("Student does not exist");
     }
     const resultExist = yield prisma_1.prisma.result.findFirst({
         where: {
@@ -51,7 +51,7 @@ const createResult = (0, express_async_handler_1.default)((req, res) => __awaite
     });
     if (resultExist) {
         res.status(400);
-        throw new Error('Result already generated!');
+        throw new Error("Result already generated!");
     }
     const addSubjects = (0, subjectResults_1.subjectResults)({ level });
     const baseData = {
@@ -61,39 +61,39 @@ const createResult = (0, express_async_handler_1.default)((req, res) => __awaite
         subLevel: student.subLevel,
         firstName: student.firstName,
         lastName: student.lastName,
-        otherName: (_a = student.otherName) !== null && _a !== void 0 ? _a : '',
-        image: (_b = student.imageUrl) !== null && _b !== void 0 ? _b : '',
+        otherName: (_a = student.otherName) !== null && _a !== void 0 ? _a : "",
+        image: (_b = student.imageUrl) !== null && _b !== void 0 ? _b : "",
         session,
         term,
         subjectResults: addSubjects,
-        teacherRemark: '',
-        principalRemark: '',
+        teacherRemark: "",
+        principalRemark: "",
     };
     let result;
-    if (level === 'Lower Reception' || level === 'Upper Reception') {
+    if (level === "Lower Reception" || level === "Upper Reception") {
         result = yield prisma_1.prisma.result.create({
             data: baseData,
         });
     }
     else {
         result = yield prisma_1.prisma.result.create({
-            data: Object.assign(Object.assign({}, baseData), { position: '', totalScore: 0, averageScore: 0, affectiveAssessment: [
-                    { aCategory: 'Attendance', grade: '-' },
-                    { aCategory: 'Carefulness', grade: '-' },
-                    { aCategory: 'Responsibility', grade: '-' },
-                    { aCategory: 'Honesty', grade: '-' },
-                    { aCategory: 'Neatness', grade: '-' },
-                    { aCategory: 'Obedience', grade: '-' },
-                    { aCategory: 'Politeness', grade: '-' },
-                    { aCategory: 'Punctuality', grade: '-' },
+            data: Object.assign(Object.assign({}, baseData), { position: "", totalScore: 0, averageScore: 0, affectiveAssessment: [
+                    { aCategory: "Attendance", grade: "-" },
+                    { aCategory: "Carefulness", grade: "-" },
+                    { aCategory: "Responsibility", grade: "-" },
+                    { aCategory: "Honesty", grade: "-" },
+                    { aCategory: "Neatness", grade: "-" },
+                    { aCategory: "Obedience", grade: "-" },
+                    { aCategory: "Politeness", grade: "-" },
+                    { aCategory: "Punctuality", grade: "-" },
                 ], psychomotor: [
-                    { pCategory: 'Handwriting', grade: '-' },
-                    { pCategory: 'Drawing', grade: '-' },
-                    { pCategory: 'Sport', grade: '-' },
-                    { pCategory: 'Speaking', grade: '-' },
-                    { pCategory: 'Music', grade: '-' },
-                    { pCategory: 'Craft', grade: '-' },
-                    { pCategory: 'ComputerPractice', grade: '-' },
+                    { pCategory: "Handwriting", grade: "-" },
+                    { pCategory: "Drawing", grade: "-" },
+                    { pCategory: "Sport", grade: "-" },
+                    { pCategory: "Speaking", grade: "-" },
+                    { pCategory: "Music", grade: "-" },
+                    { pCategory: "Craft", grade: "-" },
+                    { pCategory: "ComputerPractice", grade: "-" },
                 ] }),
         });
     }
@@ -107,7 +107,7 @@ const getResults = (0, express_async_handler_1.default)((req, res) => __awaiter(
     const user = req.user;
     if (!user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const level = req.query.level;
     const keyword = req.query.keyword;
@@ -116,13 +116,13 @@ const getResults = (0, express_async_handler_1.default)((req, res) => __awaiter(
     // Prisma filter
     const whereClause = Object.assign(Object.assign({}, (keyword && {
         OR: [
-            { firstName: { contains: keyword, mode: 'insensitive' } },
-            { lastName: { contains: keyword, mode: 'insensitive' } },
-            { otherName: { contains: keyword, mode: 'insensitive' } },
+            { firstName: { contains: keyword, mode: "insensitive" } },
+            { lastName: { contains: keyword, mode: "insensitive" } },
+            { otherName: { contains: keyword, mode: "insensitive" } },
         ],
     })), (level &&
-        level !== 'All' && {
-        level: { contains: level, mode: 'insensitive' },
+        level !== "All" && {
+        level: { contains: level, mode: "insensitive" },
     }));
     // If not admin, filter by their level/subLevel
     if (!user.isAdmin) {
@@ -132,7 +132,7 @@ const getResults = (0, express_async_handler_1.default)((req, res) => __awaiter(
     const [results, totalCount] = yield Promise.all([
         prisma_1.prisma.result.findMany({
             where: whereClause,
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
             skip: pageSize * (page - 1),
             take: pageSize,
         }),
@@ -158,18 +158,18 @@ const getResult = (0, express_async_handler_1.default)((req, res) => __awaiter(v
     });
     if (!result) {
         res.status(404);
-        throw new Error('Result does not exist');
+        throw new Error("Result does not exist");
     }
     // If a student is making the request
     if (req.student) {
         const isOwner = req.student.id.toString() === result.studentId.toString();
         if (!isOwner) {
             res.status(401);
-            throw new Error('Unauthorized Access!');
+            throw new Error("Unauthorized Access!");
         }
         if (!result.isPaid) {
             res.status(401);
-            throw new Error('Unable to access result, Please contact the admin');
+            throw new Error("Unable to access result, Please contact the admin");
         }
     }
     // If a teacher (user) is making the request, allow access regardless of isPaid
@@ -183,7 +183,7 @@ const getStudentResults = (0, express_async_handler_1.default)((req, res) => __a
         const user = req.user;
         if (!studentId) {
             res.status(400);
-            throw new Error('invalid studentId');
+            throw new Error("invalid studentId");
         }
         const results = yield prisma_1.prisma.result.findMany({
             where: {
@@ -192,14 +192,14 @@ const getStudentResults = (0, express_async_handler_1.default)((req, res) => __a
         });
         if (!results) {
             res.status(404);
-            throw new Error('Results not found!');
+            throw new Error("Results not found!");
         }
         // If a student is making the request
         if (req.student) {
             const isOwner = req.student.id.toString() === studentId.toString();
             if (!isOwner) {
                 res.status(401);
-                throw new Error('Unauthorized Access!');
+                throw new Error("Unauthorized Access!");
             }
         }
         res.status(200).json(results);
@@ -213,7 +213,7 @@ exports.getStudentResults = getStudentResults;
 const updateResult = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const validatedData = resultValidator_1.updateResultSchema.parse(req.body);
     const { subject, test, exam, grade, affectiveAssessments, psychomotorAssessments, teacherRemark, principalRemark, } = validatedData;
@@ -222,7 +222,7 @@ const updateResult = (0, express_async_handler_1.default)((req, res) => __awaite
     });
     if (!result) {
         res.status(404);
-        throw new Error('Result not found');
+        throw new Error("Result not found");
     }
     // --- Update subjectResults array ---
     let updatedSubjectResults = result.subjectResults;
@@ -235,11 +235,11 @@ const updateResult = (0, express_async_handler_1.default)((req, res) => __awaite
         const index = updatedSubjectResults.findIndex((s) => s.subject === subject);
         if (index === -1) {
             res.status(404);
-            throw new Error('Subject not found in results');
+            throw new Error("Subject not found in results");
         }
         const subjectToUpdate = updatedSubjectResults[index];
-        if (result.level === 'Lower Reception' ||
-            result.level === 'Upper Reception') {
+        if (result.level === "Lower Reception" ||
+            result.level === "Upper Reception") {
             subjectToUpdate.grade = grade || subjectToUpdate.grade;
         }
         else {
@@ -293,14 +293,14 @@ const deleteResult = (0, express_async_handler_1.default)((req, res) => __awaite
     });
     if (!result) {
         res.status(404);
-        throw new Error('Result not found!');
+        throw new Error("Result not found!");
     }
     yield prisma_1.prisma.result.delete({
         where: {
             id: result.id,
         },
     });
-    res.status(200).json({ message: 'Result Deleted successfully' });
+    res.status(200).json({ message: "Result Deleted successfully" });
 }));
 exports.deleteResult = deleteResult;
 // @desc updates result to paid and makes it visible to student
@@ -316,7 +316,7 @@ const updateResultPayment = (0, express_async_handler_1.default)((req, res) => _
         });
         if (!result) {
             res.status(404);
-            throw new Error('Result not found!');
+            throw new Error("Result not found!");
         }
         yield prisma_1.prisma.result.update({
             where: {
@@ -327,7 +327,7 @@ const updateResultPayment = (0, express_async_handler_1.default)((req, res) => _
             },
         });
         res.status(200);
-        res.json('Payment status updated successfully');
+        res.json("Payment status updated successfully");
     }
     catch (error) {
         throw error;
@@ -337,7 +337,7 @@ exports.updateResultPayment = updateResultPayment;
 const generatePositions = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     const validatedData = resultValidator_1.generatePositionsSchema.parse(req.body);
     const { level, subLevel, session, term } = validatedData;
@@ -393,7 +393,7 @@ const generateBroadsheet = (0, express_async_handler_1.default)((req, res) => __
             subLevel,
         },
         orderBy: {
-            averageScore: 'desc',
+            averageScore: "desc",
         },
     });
     if (!results || results.length === 0) {
@@ -403,9 +403,9 @@ const generateBroadsheet = (0, express_async_handler_1.default)((req, res) => __
     // Transform to broadsheet format
     const broadsheet = results.map((result) => ({
         studentId: result.studentId,
-        firstName: result.firstName || 'N/A',
-        lastName: result.lastName || 'N/A',
-        position: result.position || 'N/A',
+        firstName: result.firstName || "N/A",
+        lastName: result.lastName || "N/A",
+        position: result.position || "N/A",
         subjectResults: result.subjectResults.map((subject) => ({
             subject: subject.subject,
             testScore: subject.testScore,
@@ -423,14 +423,14 @@ const addSubjectToResults = (0, express_async_handler_1.default)((req, res) => _
         testScore: 0,
         examScore: 0,
         totalScore: 0,
-        grade: '-',
+        grade: "-",
     };
     const results = yield prisma_1.prisma.result.findMany({
         where: { session, term, level },
     });
     if (!results.length) {
         res.status(404);
-        throw new Error('No results found.');
+        throw new Error("No results found.");
     }
     const updatedResults = yield Promise.all(results.map((result) => __awaiter(void 0, void 0, void 0, function* () {
         const exists = result.subjectResults.some((s) => s.subject.toLowerCase() === subjectName.toLowerCase());
@@ -449,7 +449,10 @@ const addSubjectToResults = (0, express_async_handler_1.default)((req, res) => _
                 },
             });
         }
-        return result;
+        else {
+            res.status(400);
+            throw new Error("Subject already exists in some results");
+        }
     })));
     res.json({
         message: `${subjectName} added to ${updatedResults.length} result(s) for ${level} - ${term} term.`,
@@ -464,7 +467,7 @@ const manualSubjectRemoval = (0, express_async_handler_1.default)((req, res) => 
     });
     if (!results.length) {
         res.status(404);
-        throw new Error('No results found.');
+        throw new Error("No results found.");
     }
     const updatedResults = yield Promise.all(results.map((result) => __awaiter(void 0, void 0, void 0, function* () {
         const updatedSubjects = result.subjectResults.filter((s) => s.subject !== subjectName);
@@ -507,9 +510,15 @@ const addSubjectToStudentResult = (0, express_async_handler_1.default)((req, res
     };
     //  Merge old + new subject list (make sure subjectResults exists)
     const updatedSubjects = [...result.subjectResults, newSubject];
+    const totalScore = updatedSubjects.reduce((acc, s) => acc + (s.totalScore || 0), 0);
+    const averageScore = updatedSubjects.length > 0 ? totalScore / updatedSubjects.length : 0;
     yield prisma_1.prisma.result.update({
         where: { id: result.id },
-        data: { subjectResults: updatedSubjects },
+        data: {
+            subjectResults: updatedSubjects,
+            averageScore,
+            totalScore,
+        },
     });
     res
         .status(200)
@@ -532,12 +541,16 @@ const removeSubjectFromStudentResult = (0, express_async_handler_1.default)((req
         throw new Error("Subject required");
     }
     const updatedSubjects = result.subjectResults.filter((s) => s.subject !== subjectName);
+    const totalScore = updatedSubjects.reduce((acc, s) => acc + (s.totalScore || 0), 0);
+    const averageScore = updatedSubjects.length > 0 ? totalScore / updatedSubjects.length : 0;
     yield prisma_1.prisma.result.update({
         where: {
             id: result.id,
         },
         data: {
             subjectResults: updatedSubjects,
+            totalScore,
+            averageScore,
         },
     });
     res
@@ -548,7 +561,7 @@ exports.removeSubjectFromStudentResult = removeSubjectFromStudentResult;
 const resultData = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.user) {
         res.status(401);
-        throw new Error('Unauthorized User');
+        throw new Error("Unauthorized User");
     }
     let totalResults, publishedResults, unpublishedResults;
     if (req.user.isAdmin) {
@@ -565,8 +578,8 @@ const resultData = (0, express_async_handler_1.default)((req, res) => __awaiter(
     }
     else {
         const filter = {
-            level: req.user.level || '',
-            subLevel: req.user.subLevel || '',
+            level: req.user.level || "",
+            subLevel: req.user.subLevel || "",
         };
         [totalResults, publishedResults, unpublishedResults] = yield Promise.all([
             prisma_1.prisma.result.count({ where: filter }),
@@ -596,7 +609,7 @@ const studentResultData = (0, express_async_handler_1.default)((req, res) => __a
         }),
         prisma_1.prisma.result.findMany({
             where: { studentId: req.student.id, isPublished: true },
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
         }),
     ]);
     res.status(200).json({
@@ -616,18 +629,18 @@ const exportResult = (0, express_async_handler_1.default)((req, res) => __awaite
     });
     if (!result) {
         res.status(404);
-        throw new Error('Not found');
+        throw new Error("Not found");
     }
     if (!result.isPublished) {
         res.status(401);
-        throw new Error('Result is not yet published');
+        throw new Error("Result is not yet published");
     }
     const html = yield (0, generateStudentResult_1.generateStudentResultHTML)(result);
     const pdfBuffer = yield (0, generateStudentPdf_1.generateStudentPdf)(html);
-    const fileName = `students-report-${new Date().toISOString().split('T')[0]}.pdf`;
+    const fileName = `students-report-${new Date().toISOString().split("T")[0]}.pdf`;
     res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${fileName}"`,
     });
     res.send(pdfBuffer);
 }));
@@ -643,21 +656,21 @@ const exportManyResults = (0, express_async_handler_1.default)((req, res) => __a
             term,
         },
         orderBy: {
-            averageScore: 'asc',
+            averageScore: "asc",
         },
     });
     if (results.length === 0) {
         res.status(404);
-        throw new Error('No published results found');
+        throw new Error("No published results found");
     }
     // Generate HTML for all results, separated by page breaks
     const htmlSections = yield Promise.all(results.map(generateStudentResult_1.generateStudentResultHTML));
     const html = htmlSections.join('<div style="page-break-after: always;"></div>');
     const pdfBuffer = yield (0, generateStudentPdf_1.generateStudentPdf)(html);
-    const fileName = `all-students-results-${new Date().toISOString().split('T')[0]}.pdf`;
+    const fileName = `all-students-results-${new Date().toISOString().split("T")[0]}.pdf`;
     res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${fileName}"`,
     });
     res.send(pdfBuffer);
 }));

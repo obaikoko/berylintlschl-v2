@@ -7,8 +7,10 @@ import { RemoveSubjectForm } from '@/schemas/resultSchema';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { levels, sessions, showZodErrors, subjects, terms } from '@/lib/utils';
+import { levels, sessions, showZodErrors, terms } from '@/lib/utils';
 import { useRemoveSubjectMutation } from '@/src/features/results/resultApiSlice';
+import { useGetSubjectsQuery } from "@/src/features/subjects/subjectsApiSlice";
+import { SubjectSchema } from "@/schemas/subjectSchema";
 
 const RemoveSubjectFromResult = () => {
   const {
@@ -21,6 +23,10 @@ const RemoveSubjectFromResult = () => {
   });
 
   const [removeSubject, { isLoading }] = useRemoveSubjectMutation();
+   const {
+      data: subjects = [],
+      isLoading: loadingSubjects,
+    } = useGetSubjectsQuery({});
 
   const onSubmit = async (data: RemoveSubjectForm) => {
     try {
@@ -38,16 +44,16 @@ const RemoveSubjectFromResult = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor='session'>Session</Label>
+          <Label htmlFor="session">Session</Label>
           <select
-            className='bg-background text-foreground'
-            {...register('session')}
-            defaultValue=''
+            className="bg-background text-foreground"
+            {...register("session")}
+            defaultValue=""
           >
-            <option value=''>Select Session</option>
+            <option value="">Select Session</option>
 
             {sessions.map((session, index) => (
               <option key={index} value={session}>
@@ -57,7 +63,7 @@ const RemoveSubjectFromResult = () => {
           </select>
 
           {errors.session && (
-            <p className='text-red-500 text-sm mt-1'>
+            <p className="text-red-500 text-sm mt-1">
               {errors.session.message}
             </p>
           )}
@@ -65,10 +71,10 @@ const RemoveSubjectFromResult = () => {
 
         <div>
           <select
-            className='bg-background text-foreground'
-            {...register('term')}
+            className="bg-background text-foreground"
+            {...register("term")}
           >
-            <option value=''>Select Term</option>
+            <option value="">Select Term</option>
 
             {terms.map((term, index) => (
               <option key={index} value={term}>
@@ -77,15 +83,15 @@ const RemoveSubjectFromResult = () => {
             ))}
           </select>
           {errors.term && (
-            <p className='text-red-500 text-sm mt-1'>{errors.term.message}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.term.message}</p>
           )}
         </div>
 
         <div>
-          <option value=''>Select Level/Class</option>
+          <option value="">Select Level/Class</option>
           <select
-            className='bg-background text-foreground'
-            {...register('level')}
+            className="bg-background text-foreground"
+            {...register("level")}
           >
             {levels.map((level, index) => (
               <option key={index} value={level}>
@@ -94,33 +100,36 @@ const RemoveSubjectFromResult = () => {
             ))}
           </select>
           {errors.level && (
-            <p className='text-red-500 text-sm mt-1'>{errors.level.message}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.level.message}</p>
           )}
         </div>
 
         <div>
           <select
-            className='bg-background text-foreground'
-            {...register('subjectName')}
+            className="bg-background text-foreground"
+            {...register("subjectName")}
+            disabled={loadingSubjects}
+            defaultValue=""
           >
-            <option value=''>Select Subject</option>
+            <option value="">
+              {loadingSubjects ? "Loading subjects..." : "Select Subject"}
+            </option>
 
-            {subjects.map((subjectName, index) => (
-              <option key={index} value={subjectName}>
-                {subjectName}
+            {subjects.map((subject: SubjectSchema) => (
+              <option key={subject.id} value={subject.name}>
+                {subject.name}
               </option>
             ))}
           </select>
+
           {errors.subjectName && (
-            <p className='text-red-500 text-sm mt-1'>
-              {errors.subjectName.message}
-            </p>
+            <p className="text-red-500 text-sm">{errors.subjectName.message}</p>
           )}
         </div>
       </div>
 
-      <Button type='submit' className='w-full' disabled={isLoading}>
-        {isLoading ? 'Processing...' : 'Remove Subject from Results'}
+      <Button type="submit" className="w-full" disabled={isLoading}>
+        {isLoading ? "Processing..." : "Remove Subject from Results"}
       </Button>
     </form>
   );

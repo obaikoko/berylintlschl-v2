@@ -12,19 +12,24 @@ import {
   useManageStudentSubjectsMutation,
   useGetResultQuery,
 } from "@/src/features/results/resultApiSlice";
-import { showZodErrors, subjects } from "@/lib/utils";
+import { showZodErrors } from "@/lib/utils";
 import { toast } from "sonner";
+import { useGetSubjectsQuery } from "@/src/features/subjects/subjectsApiSlice";
+import { SubjectSchema } from "@/schemas/subjectSchema";
 
 const ManageSubjects = ({ resultId }: { resultId: string }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedAction, setSelectedAction] = useState("");
-  const [addSubject, {  isLoading }] =
-    useManageStudentSubjectsMutation();
+  const [addSubject, { isLoading }] = useManageStudentSubjectsMutation();
   const { data, refetch } = useGetResultQuery(resultId);
+  const {
+    data: subjects = [],
+    isLoading: loadingSubjects,
+  } = useGetSubjectsQuery({});
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // ✅ Correct usage
+    e.preventDefault();
 
     if (!selectedSubject) {
       toast.error("Subject required");
@@ -97,17 +102,19 @@ const ManageSubjects = ({ resultId }: { resultId: string }) => {
               onChange={(e) => setSelectedSubject(e.target.value)}
               className="w-full mt-1 rounded-md border border-gray-300 bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <option value="" disabled>
-                Select a subject
+              <option value="">
+                {loadingSubjects ? "Loading subjects..." : "Select Subject"}
               </option>
               {selectedAction === "add"
-                ? subjects.map((subject, index) => (
-                    <option key={index} value={subject}>
-                      {subject}
+                ? subjects.map((subject: SubjectSchema) => (
+                    <option key={subject.id} value={subject.name}>
+                      {subject.name}
                     </option>
                   ))
                 : data?.subjectResults.map((sr, index) => (
-                    <option key={index} value={sr.subject}> {sr.subject}</option>
+                    <option key={index} value={sr.subject}>
+                      {sr.subject}
+                    </option>
                   ))}
             </select>
 

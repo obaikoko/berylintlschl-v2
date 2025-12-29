@@ -19,6 +19,7 @@ export const apiSlice = createApi({
     "SchemeOfWork",
     "TimeTable",
     "Billing",
+    "Subjects",
   ],
   // eslint-disable-next-line
   endpoints: (builder) => ({}),

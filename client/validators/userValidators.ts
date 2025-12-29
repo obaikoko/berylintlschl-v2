@@ -38,17 +38,6 @@ export const authResponseSchema = z.object({
 
 
 
-// interface EditUserFormData {
-//   userId?: string;
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   role: string;
-//   status?: string;
-//   level: string;
-//   subLevel: string;
-//   isAdmin?: string;
-// }
 export const updateUserSchema = z.object({
   userId: z.string().min(3, 'User ID is required'),
   firstName: z
@@ -79,11 +68,7 @@ export const sendSingleMailSchema = z.object({
   text: z.string().min(1, 'Email body text is required'),
 });
 
-// export const singleMailSchema = z.object({
-//   email: z.string().email('Invali email address'),
-//   subject: z.string().min(1, 'Subject is required'),
-//   text: z.string().min(1, 'Email body text is required'),
-// });
+
 
 export const sendBulkMailSchema = z.object({
   emails: z.array(z.string()),
